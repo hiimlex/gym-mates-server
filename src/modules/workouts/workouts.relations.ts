@@ -28,8 +28,8 @@ WorkoutsTC.addRelation("user", {
 WorkoutsTC.addRelation("shared_to", {
 	resolver: () => CrewsTC.getResolver("findMany"),
 	prepareArgs: {
-		_filter: (source) => ({
-			_id: { in: source.shared_to },
+		filter: (source) => ({
+			_id: { $all: source.shared_to },
 		}),
 	},
 	projection: { shared_to: true }, // Provide the field to be projected

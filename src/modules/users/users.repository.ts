@@ -20,6 +20,7 @@ import { compareSync, hashSync } from "bcrypt";
 import { HashSalt } from "types/generics";
 import { CrewsModel } from "@modules/crews";
 import { destroyCloudinaryFileOnError } from "@utils/destroyCloudinaryFileOnError";
+import { UserDeviceModel } from "@modules/user_device";
 
 class UsersRepository {
 	@CatchError()
@@ -257,7 +258,7 @@ class UsersRepository {
 				);
 
 				const crews_in_common = await CrewsModel.find({
-					"members.user": { $all: [user._id, follower._id] }
+					"members.user": { $all: [user._id, follower._id] },
 				});
 
 				followers.push({
@@ -290,6 +291,38 @@ class UsersRepository {
 			followers: followers,
 			following: following,
 		});
+	}
+
+	@CatchError()
+	async register_device_token(req: Request, res: Response) {
+		const user: IUserDocument = res.locals.user;
+
+		const { pushToken, deviceInfo } = req.body;
+
+		if (!pushToken) {
+			throw new HttpException(400, "DEVICE_TOKEN_NOT_PROVIDED");
+		}
+
+		const user_device = await UserDeviceModel.findOne({ user: user._id });
+
+		if (user_device) {
+			if (user_device.pushToken === pushToken) {
+				return res.sendStatus(204);
+			}
+
+			await user_device.updateOne({ pushToken });
+		}
+
+		if (!user_device) {
+			await UserDeviceModel.create({
+				user: user._id,
+				pushToken,
+				deviceInfo,
+				lastActive: new Date(),
+			});
+		}
+
+		return res.sendStatus(204);
 	}
 }
 

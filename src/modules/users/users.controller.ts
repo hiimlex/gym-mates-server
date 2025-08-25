@@ -20,7 +20,7 @@ export class UsersController extends BaseController {
 			Endpoints.UsersGetFollowersInfo,
 			AuthRepositoryImpl.is_authenticated,
 			UsersRepositoryImpl.get_followers_info
-		)
+		);
 
 		this.router.post(
 			Endpoints.UsersFollow,
@@ -38,6 +38,12 @@ export class UsersController extends BaseController {
 			Endpoints.UsersCreateHealthy,
 			AuthRepositoryImpl.is_authenticated,
 			UsersRepositoryImpl.create_healthy
+		);
+
+		this.router.post(
+			Endpoints.UsersRegisterDeviceToken,
+			AuthRepositoryImpl.is_authenticated,
+			UsersRepositoryImpl.register_device_token
 		);
 
 		this.router.put(

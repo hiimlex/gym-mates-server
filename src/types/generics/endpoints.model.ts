@@ -34,6 +34,7 @@ export const Endpoints = {
 	UsersUpdateAvatar: "/users/update-avatar",
 	UsersGetJourney: "/users/journey",
 	UsersGetFollowersInfo: "/users/followers-info",
+	UsersRegisterDeviceToken: "/users/register-device-token",
 	// Workouts
 	WorkoutsCreate: "/workouts",
 	// Shop

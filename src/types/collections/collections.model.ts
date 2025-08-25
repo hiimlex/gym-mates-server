@@ -9,4 +9,5 @@ export const Collections = {
 	Achievements: "Achievements",
 	Figures: "Figures",
 	Files: "Files",
+	UserDevices: "UserDevices",
 };
