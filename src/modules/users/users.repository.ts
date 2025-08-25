@@ -19,6 +19,7 @@ import { UsersModel } from "./users.schema";
 import { compareSync, hashSync } from "bcrypt";
 import { HashSalt } from "types/generics";
 import { CrewsModel } from "@modules/crews";
+import { destroyCloudinaryFileOnError } from "@utils/destroyCloudinaryFileOnError";
 
 class UsersRepository {
 	@CatchError()
@@ -48,6 +49,18 @@ class UsersRepository {
 		});
 
 		// [Notify] - Notify the friend about the new follower
+
+		// [Journey] - Add a new event to the user's journey
+		const event: TJourneyEvent = {
+			_id: new Types.ObjectId(),
+			action: JourneyEventAction.FOLLOW,
+			schema: JourneyEventSchemaType.User,
+			data: {
+				user: user,
+			},
+			created_at: new Date(),
+		};
+		await user.add_journey_event(event);
 
 		return res.sendStatus(204);
 	}
@@ -131,14 +144,7 @@ class UsersRepository {
 		return res.sendStatus(204);
 	}
 
-	@CatchError(async (req) => {
-		if (req.file) {
-			const file = req.file as TUploadedFile;
-			if (file) {
-				await cloudinaryDestroy(file.filename);
-			}
-		}
-	})
+	@CatchError(destroyCloudinaryFileOnError)
 	async update_avatar(req: Request, res: Response) {
 		const file = req.file as TUploadedFile;
 		const user: IUserDocument = res.locals.user;
@@ -251,7 +257,7 @@ class UsersRepository {
 				);
 
 				const crews_in_common = await CrewsModel.find({
-					"members.user": { $in: [user._id, follower._id] },
+					"members.user": { $all: [user._id, follower._id] }
 				});
 
 				followers.push({
@@ -269,7 +275,7 @@ class UsersRepository {
 				);
 
 				const crews_in_common = await CrewsModel.find({
-					"members.user": { $in: [user._id, follow._id] },
+					"members.user": { $all: [user._id, follow._id] },
 				});
 
 				following.push({

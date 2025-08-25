@@ -8,7 +8,6 @@ import { create_apollo_server } from "gpql/gpql";
 import mongoose from "mongoose";
 import { JwtSecret } from "types/generics";
 import { routers } from "./routers/routers";
-import { set_apollo_context } from "@middlewares/set_apollo_context.middleware";
 
 export class Server {
 	app!: Application;

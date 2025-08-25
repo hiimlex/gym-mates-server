@@ -12,6 +12,7 @@ export enum JourneyEventAction {
 	PAID = "paid",
 	LOSE_STREAK = "lose_streak",
 	START = "start",
+	FOLLOW = "follow",
 }
 
 export enum JourneyEventSchemaType {

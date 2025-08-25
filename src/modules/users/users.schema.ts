@@ -58,7 +58,7 @@ const UsersSchema = new Schema(
 			type: Date,
 			default: Date.now,
 			required: true,
-		}
+		},
 	},
 	{ versionKey: false, timestamps, collection: Collections.Users }
 );
@@ -99,9 +99,11 @@ UsersSchema.methods.add_workout = async function (workout_id: Types.ObjectId) {
 	await user_journey.updateOne({
 		$push: { workouts: workout_id },
 	});
-}
+};
 
-UsersSchema.methods.add_item_to_inventory = async function (item_id: Types.ObjectId){
+UsersSchema.methods.add_item_to_inventory = async function (
+	item_id: Types.ObjectId
+) {
 	const user = this as IUserDocument;
 
 	// Ensure the user has a journey
@@ -118,7 +120,7 @@ UsersSchema.methods.add_item_to_inventory = async function (item_id: Types.Objec
 	await user_journey.updateOne({
 		$push: { inventory: item_id },
 	});
-}
+};
 
 UsersSchema.methods.toJSON = function () {
 	const user = this;
