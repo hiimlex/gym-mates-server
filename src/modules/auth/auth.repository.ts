@@ -161,6 +161,17 @@ class AuthRepository {
 		res.locals.journey = journey;
 		next();
 	}
+	
+	@CatchError()
+	async is_admin(req: Request, res: Response, next: NextFunction) {
+		const { sudo } = req.body;
+
+		if (sudo !== process.env.SUDO_KEY) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
+
+		next();
+	}
 }
 
 const AuthRepositoryImpl = new AuthRepository();

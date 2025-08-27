@@ -564,8 +564,7 @@ class CrewsRepository {
 
 	@CatchError()
 	async get_activities_days(req: Request, res: Response) {
-		const { crew_id } = req.body;
-		const { start_date, end_date } = req.query;
+		const { start_date, end_date, crew_id } = req.query;
 
 		const start_date_obj = start_date
 			? new Date(start_date as string)

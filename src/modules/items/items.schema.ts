@@ -13,7 +13,7 @@ import {
 
 const ItemSchema = new Schema(
 	{
-		name: { type: String, required: true, unique: true },
+		name: { type: String, required: true },
 		category: {
 			type: String,
 			enum: Object.values(ItemCategory),
@@ -50,6 +50,7 @@ const FiguresModel = ItemsModel.discriminator<IFigureDocument>(
 	new Schema(
 		{
 			file: FileSchema,
+			preview: FileSchema,
 		},
 		{
 			versionKey: false,
@@ -86,6 +87,7 @@ const SkinsModel = ItemsModel.discriminator<IFigureDocument>(
 	new Schema(
 		{
 			file: FileSchema,
+			preview: FileSchema,
 		},
 		{
 			versionKey: false,

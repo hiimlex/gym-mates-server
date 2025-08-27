@@ -34,9 +34,7 @@ const FiguresTC = ItemsDTC.discriminator(FiguresModel, {
 	name: ItemCategoryTc[ItemCategory.Figure],
 });
 
-const ItemsQueries = {
-	items: ItemsDTC.getResolver("findMany"),
-};
+const ItemsQueries = {};
 
 const ItemsMutations = {};
 

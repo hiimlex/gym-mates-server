@@ -1,5 +1,6 @@
 import { ItemSchema } from "@modules/items";
 import { Document, InferSchemaType, Model, Types } from "mongoose";
+import { IFileDocument, TFile } from "./files.model";
 
 export enum ItemCategory {
 	Title = "title",
@@ -37,7 +38,8 @@ export interface ITitleDocument extends IItemDocument {
 }
 
 export interface IFigureDocument extends IItemDocument {
-	src: string;
+	file: TFile;
+	preview: TFile;
 }
 
 export interface IItemModel extends Model<IItemDocument> {}

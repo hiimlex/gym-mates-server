@@ -9,4 +9,11 @@ export const destroyCloudinaryFileOnError = async (req: Request) => {
 			await cloudinaryDestroy(file.filename);
 		}
 	}
+
+	if(req.files){
+		const files = req.files as TUploadedFile[];
+		for(const file of files){
+			await cloudinaryDestroy(file.filename);
+		}
+	}
 };
