@@ -11,8 +11,6 @@ export const create_apollo_server = async () => {
 
 		await server.start();
 
-		console.log("Apollo Server started successfully");
-
 		return server;
 	} catch (error) {
 		console.error("Error creating Apollo Server:", error);

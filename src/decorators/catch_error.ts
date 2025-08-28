@@ -1,7 +1,7 @@
 import { handle_error } from "@utils/handle_error";
-import { Request } from "express";
+import { Request, Response } from "express";
 
-export default function CatchError(errorCb?: (req: Request) => Promise<void>): any {
+export function CatchError(errorCb?: (req: Request, res: Response) => Promise<void>): any {
 	return (_: object, __: string, descriptor: PropertyDescriptor) => {
 		const originalValue = descriptor.value;
 
@@ -9,7 +9,7 @@ export default function CatchError(errorCb?: (req: Request) => Promise<void>): a
 			try {
 				return await originalValue.apply(this, args);
 			} catch (error) {
-				await errorCb?.(args[0]);
+				await errorCb?.(args[0], args[1]);
 				return handle_error(args[1], error);
 			}
 		};

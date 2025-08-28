@@ -1,17 +1,10 @@
+import { DecoratorController } from "@core/base_controller";
 import { HttpException } from "@core/http_exception/http_exception";
-import {
-	AccessTokenCookie,
-	COOKIE_MAX_AGE,
-	HashSalt,
-	JwtExpiresIn,
-	JwtSecret,
-} from "types/generics";
+import { JourneyModel } from "@modules/journey";
 import { compareSync, hashSync } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import { decode, sign } from "jsonwebtoken";
-import { UsersModel } from "../users";
-import { handle_error } from "@utils/handle_error";
-import { JourneyModel } from "@modules/journey";
+import { Types } from "mongoose";
 import {
 	IUserDocument,
 	JourneyEventAction,
@@ -20,13 +13,17 @@ import {
 	TJourneyEvent,
 	TUploadedFile,
 } from "types/collections";
-import { Types } from "mongoose";
-import { cloudinaryDestroy } from "@config/cloudinary.config";
-import CatchError from "decorators/catch_error";
+import { Endpoints, HashSalt, JwtExpiresIn, JwtSecret } from "types/generics";
+import { CatchError } from "../../decorators/catch_error";
+import { IsAuthenticated } from "../../decorators/is_authenticated";
+import { Get, Post } from "../../decorators/routes.decorator";
+import { Upload } from "../../decorators/upload.decorator";
+import { UsersModel } from "../users";
 
-class AuthRepository {
+class AuthRepository extends DecoratorController {
+	@Post(Endpoints.AuthLogin)
 	@CatchError()
-	async login(req: Request, res: Response) {
+	protected async login(req: Request, res: Response) {
 		const { email, password } = req.body;
 
 		const user = await UsersModel.findOne({ email });
@@ -54,12 +51,10 @@ class AuthRepository {
 		});
 	}
 
-	@CatchError(async (req) => {
-		if (req.file) {
-			await cloudinaryDestroy(req.file.filename);
-		}
-	})
-	async sign_up(req: Request, res: Response) {
+	@Post(Endpoints.AuthSignUp)
+	@CatchError()
+	@Upload()
+	protected async sign_up(req: Request, res: Response) {
 		const file = req.file as TUploadedFile;
 		const { email, password, name } = req.body;
 		let avatar: TFile | undefined = undefined;
@@ -111,8 +106,9 @@ class AuthRepository {
 		return res.status(201).json({ access_token, user });
 	}
 
-	@CatchError()
-	async me(req: Request, res: Response) {
+	@Get(Endpoints.AuthMe)
+	@IsAuthenticated()
+	protected async me(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
 
 		if (!user) {
@@ -130,9 +126,10 @@ class AuthRepository {
 		return res.status(200).json(user);
 	}
 
-	@CatchError()
-	async is_authenticated(req: Request, res: Response, next: NextFunction) {
+	public async is_authenticated(req: Request, res: Response, next: NextFunction) {
 		const access_token = req.headers.authorization?.split(" ")[1];
+
+		console.log("is_authenticated Middleware", access_token);
 
 		if (!access_token) {
 			throw new HttpException(401, "UNAUTHORIZED");
@@ -161,9 +158,8 @@ class AuthRepository {
 		res.locals.journey = journey;
 		next();
 	}
-	
-	@CatchError()
-	async is_admin(req: Request, res: Response, next: NextFunction) {
+
+	public async is_admin(req: Request, res: Response, next: NextFunction) {
 		const { sudo } = req.body;
 
 		if (sudo !== process.env.SUDO_KEY) {

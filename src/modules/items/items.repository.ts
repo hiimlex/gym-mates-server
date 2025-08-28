@@ -1,5 +1,5 @@
 import { destroyCloudinaryFileOnError } from "@utils/destroyCloudinaryFileOnError";
-import CatchError from "decorators/catch_error";
+import { CatchError } from "../../decorators/catch_error";
 import { Request, Response } from "express";
 import {
 	IFigureDocument,
@@ -10,10 +10,18 @@ import {
 import { FiguresModel, SkinsModel } from "./items.schema";
 import { HttpException } from "@core/http_exception";
 import { cloudinaryDestroy } from "@config/cloudinary.config";
+import { DecoratorController } from "@core/base_controller";
+import { Delete, Post } from "../../decorators/routes.decorator";
+import { Endpoints } from "types/generics";
+import { IsAdmin } from "../../decorators/is_admin.decorator";
+import { Upload } from "../../decorators/upload.decorator";
 
-class ItemsRepository {
-	@CatchError(destroyCloudinaryFileOnError)
-	async create_figure(req: Request, res: Response) {
+class ItemsRepository extends DecoratorController {
+	@Post(Endpoints.ItemsCreateFigure)
+	@Upload({ multiple: true })
+	@CatchError()
+	@IsAdmin()
+	protected async create_figure(req: Request, res: Response) {
 		const { name, price, requirements, category } = req.body;
 		const [file_uploaded, item_preview_uploaded] = req.files as TUploadedFile[];
 		if (!file_uploaded || !item_preview_uploaded) {
@@ -42,8 +50,10 @@ class ItemsRepository {
 		return res.status(200).json(figure);
 	}
 
+	@Delete("/items/figure/:id")
 	@CatchError()
-	async delete_figure(req: Request, res: Response) {
+	@IsAdmin()
+	protected async delete_figure(req: Request, res: Response) {
 		const id = req.path;
 
 		const figure = await FiguresModel.findById(id);

@@ -2,7 +2,9 @@ import { cloudinaryDestroy } from "@config/cloudinary.config";
 import { HttpException } from "@core/http_exception";
 import { UsersModel } from "@modules/users";
 import { WorkoutsModel } from "@modules/workouts";
-import { handle_error } from "@utils/handle_error";
+import { CatchError } from "../../decorators/catch_error";
+
+import { DecoratorController } from "@core/base_controller";
 import { Request, Response } from "express";
 import { Types } from "mongoose";
 import {
@@ -15,15 +17,165 @@ import {
 	TUploadedFile,
 	TUser,
 } from "types/collections";
+import { Endpoints } from "types/generics";
+import { IsAuthenticated } from "../../decorators/is_authenticated";
+import { Delete, Get, Post, Put } from "../../decorators/routes.decorator";
+import { Upload } from "../../decorators/upload.decorator";
 import { CrewsModel } from "./crews.schema";
-import CatchError from "decorators/catch_error";
 
-class CrewsRepository {
-	@CatchError(async (req) => {
-		if (req.file) {
-			await cloudinaryDestroy(req.file.filename);
+class CrewsRepository extends DecoratorController {
+	@Get(Endpoints.CrewsGetByCode)
+	@CatchError()
+	@IsAuthenticated()
+	async get_by_code(req: Request, res: Response) {
+		const { code } = req.params;
+
+		const crew = await CrewsModel.findOne({ code });
+
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
 		}
-	})
+
+		return res.status(200).json(crew);
+	}
+
+	@Get(Endpoints.CrewsGetRank)
+	@CatchError()
+	@IsAuthenticated()
+	async get_rank(req: Request, res: Response) {
+		const user: IUserDocument = res.locals.user;
+		const { crew_id, show_all } = req.body;
+
+		const crew = await CrewsModel.findById(crew_id);
+
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const is_member = crew.members.some(
+			(member) => member.user.toString() === user._id.toString()
+		);
+
+		if (!is_member) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
+
+		const crew_populated = await crew.populate<{
+			members: (TCrewMember & { user: TUser })[];
+		}>("members");
+
+		const rank = crew_populated.members
+			.map((member) => ({
+				_id: member.user._id,
+				name: member.user.name,
+				avatar: member.user.avatar,
+				character: member.user.character,
+				coins: member.user.coins || 0,
+			}))
+			.sort((a, b) => {
+				return a.coins < b.coins ? 1 : -1;
+			});
+
+		if (!show_all) {
+			const first_three = rank.slice(0, 3);
+
+			return res.status(200).json(first_three);
+		}
+
+		return res.status(200).json(rank);
+	}
+
+	@Get(Endpoints.CrewsGetActivities)
+	@CatchError()
+	@IsAuthenticated()
+	async get_activities(req: Request, res: Response) {
+		const { crew_id } = req.body;
+		const { start_date, end_date } = req.query;
+
+		const start_date_obj = start_date
+			? new Date(start_date as string)
+			: new Date();
+
+		const end_date_obj = end_date ? new Date(end_date as string) : new Date();
+
+		start_date_obj.setHours(0, 0, 0, 0);
+		end_date_obj.setHours(23, 59, 59, 999);
+
+		const crew = await CrewsModel.findById(crew_id);
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const workouts = await WorkoutsModel.find({
+			shared_to: crew._id,
+			user: { $in: crew.members.map((m) => m.user) },
+			date: {
+				$gte: start_date_obj,
+				$lt: end_date_obj,
+			},
+		});
+
+		return res.status(200).json(workouts);
+	}
+
+	@Get(Endpoints.CrewsGetActivitiesDays)
+	@CatchError()
+	@IsAuthenticated()
+	async get_activities_days(req: Request, res: Response) {
+		const { start_date, end_date, crew_id } = req.query;
+
+		const start_date_obj = start_date
+			? new Date(start_date as string)
+			: new Date();
+
+		const end_date_obj = end_date ? new Date(end_date as string) : new Date();
+
+		start_date_obj.setHours(0, 0, 0, 0);
+		end_date_obj.setHours(23, 59, 59, 999);
+
+		const crew = await CrewsModel.findById(crew_id);
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const workouts = await WorkoutsModel.aggregate([
+			{
+				$match: {
+					shared_to: crew._id,
+					user: { $in: crew.members.map((m) => m.user) },
+					date: {
+						$gte: start_date_obj,
+						$lt: end_date_obj,
+					},
+				},
+			},
+			{
+				$group: {
+					_id: {
+						year: { $year: "$date" },
+						month: { $month: "$date" },
+						day: { $dayOfMonth: "$date" },
+					},
+					count: { $sum: 1 },
+				},
+			},
+			{
+				$sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 },
+			},
+		]);
+
+		const activities_days = workouts.map((workout) => ({
+			date: new Date(workout._id.year, workout._id.month - 1, workout._id.day),
+			count: workout.count,
+		}));
+
+		return res.status(200).json(activities_days);
+	}
+
+	@Post(Endpoints.CrewsCreate)
+	@CatchError()
+	@IsAuthenticated()
+	@Upload()
 	async create(req: Request, res: Response) {
 		const file = req.file as TUploadedFile;
 		const user = res.locals.user as IUserDocument;
@@ -70,129 +222,9 @@ class CrewsRepository {
 		return res.status(201).json(crew);
 	}
 
-	@CatchError(async (req) => {
-		if (req.file) {
-			await cloudinaryDestroy(req.file.filename);
-		}
-	})
-	async update_banner(req: Request, res: Response) {
-		const user: IUserDocument = res.locals.user;
-		const file = req.file as TUploadedFile;
-		const { crew_id } = req.body;
-
-		if (!file) {
-			throw new HttpException(400, "FILE_NOT_PROVIDED");
-		}
-
-		const crew = await CrewsModel.findById(crew_id);
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		const is_admin = crew.members.some(
-			(member) =>
-				member.user.toString() === user._id.toString() && member.is_admin
-		);
-
-		if (!is_admin) {
-			throw new HttpException(403, "FORBIDDEN");
-		}
-
-		if (crew.banner && crew.banner.public_id) {
-			await cloudinaryDestroy(crew.banner.public_id);
-		}
-
-		const banner: TFile = {
-			public_id: file.filename,
-			url: file.path,
-		};
-
-		const updated_crew = await CrewsModel.findByIdAndUpdate(
-			crew_id,
-			{ banner },
-			{ new: true }
-		);
-
-		return res.status(200).json(updated_crew);
-	}
-
+	@Post(Endpoints.CrewsJoin)
 	@CatchError()
-	async get_by_code(req: Request, res: Response) {
-		const { code } = req.params;
-
-		const crew = await CrewsModel.findOne({ code });
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		return res.status(200).json(crew);
-	}
-
-	@CatchError()
-	async delete(req: Request, res: Response) {
-		const user: IUserDocument = res.locals.user;
-
-		const crew_id = req.params.id;
-
-		const crew = await CrewsModel.findById(crew_id);
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		const is_owner = crew.created_by.toString() === user._id.toString();
-
-		if (!is_owner) {
-			throw new HttpException(403, "FORBIDDEN");
-		}
-
-		await crew.deleteOne();
-
-		// [Notify] - Notify the crew members that the crew has been deleted
-
-		return res.sendStatus(204);
-	}
-
-	@CatchError()
-	async update_config(req: Request, res: Response) {
-		const user: IUserDocument = res.locals.user;
-
-		const { crew_id } = req.body;
-
-		const crew = await CrewsModel.findById(crew_id);
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		const is_admin = crew.members.some(
-			(member) =>
-				member.user.toString() === user._id.toString() && member.is_admin
-		);
-
-		if (!is_admin) {
-			throw new HttpException(403, "FORBIDDEN");
-		}
-
-		const { name, visibility, rules, lose_streak_in_days, streak } = req.body;
-
-		const updated_crew = await CrewsModel.findByIdAndUpdate(
-			crew_id,
-			{
-				visibility,
-				rules,
-				lose_streak_in_days,
-				streak,
-			},
-			{ new: true }
-		);
-
-		return res.status(200).json(updated_crew);
-	}
-
-	@CatchError()
+	@IsAuthenticated()
 	async join(req: Request, res: Response) {
 		const { code } = req.body;
 		const user = res.locals.user as IUserDocument;
@@ -255,86 +287,9 @@ class CrewsRepository {
 		return res.status(200).json({ joined, in_whitelist });
 	}
 
+	@Post(Endpoints.CrewsAcceptMember)
 	@CatchError()
-	async leave(req: Request, res: Response) {
-		const { code } = req.body;
-		const { user } = res.locals;
-
-		const crew = await CrewsModel.findOne({ code });
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		const member = crew.members.find(
-			(member) => member.user.toString() === user._id.toString()
-		);
-
-		if (!member) {
-			throw new HttpException(400, "USER_NOT_A_MEMBER");
-		}
-
-		if (crew.created_by.toString() === user._id.toString()) {
-			throw new HttpException(400, "CANNOT_LEAVE_CREW_OWNER");
-		}
-
-		await crew.updateOne({
-			$pull: { members: member._id },
-		});
-
-		return res.sendStatus(204);
-	}
-
-	@CatchError()
-	async update_admin(req: Request, res: Response) {
-		const { user_id, code, set_admin } = req.body;
-
-		const admin: IUserDocument = res.locals.user;
-
-		const user = await UsersModel.findById(user_id);
-		if (!user) {
-			throw new HttpException(404, "USER_NOT_FOUND");
-		}
-
-		const crew = await CrewsModel.findOne({
-			code,
-		});
-
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
-		}
-
-		const admin_in_crew = crew.members.some(
-			(adm) => adm.user.toString() === admin._id.toString() && adm.is_admin
-		);
-
-		if (!admin_in_crew) {
-			throw new HttpException(403, "FORBIDDEN");
-		}
-
-		const user_in_crew = crew.members.find(
-			(member) => member.user.toString() === user._id.toString()
-		);
-
-		if (!user_in_crew) {
-			throw new HttpException(400, "USER_NOT_A_MEMBER");
-		}
-
-		await CrewsModel.updateOne(
-			{
-				"members._id": user_in_crew._id,
-			},
-			{
-				$set: {
-					"members.$.is_admin": set_admin,
-				},
-			}
-		);
-
-		return res.sendStatus(204);
-	}
-
-	@CatchError()
+	@IsAuthenticated()
 	async accept_member(req: Request, res: Response) {
 		const admin: IUserDocument = res.locals.user;
 		const { user_id, code } = req.body;
@@ -400,7 +355,9 @@ class CrewsRepository {
 		return res.sendStatus(204);
 	}
 
+	@Post(Endpoints.CrewsRejectMember)
 	@CatchError()
+	@IsAuthenticated()
 	async reject_member(req: Request, res: Response) {
 		const admin: IUserDocument = res.locals.user;
 		const { user_id, code } = req.body;
@@ -444,7 +401,41 @@ class CrewsRepository {
 		return res.sendStatus(204);
 	}
 
+	@Post(Endpoints.CrewsLeave)
 	@CatchError()
+	@IsAuthenticated()
+	async leave(req: Request, res: Response) {
+		const { code } = req.body;
+		const { user } = res.locals;
+
+		const crew = await CrewsModel.findOne({ code });
+
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const member = crew.members.find(
+			(member) => member.user.toString() === user._id.toString()
+		);
+
+		if (!member) {
+			throw new HttpException(400, "USER_NOT_A_MEMBER");
+		}
+
+		if (crew.created_by.toString() === user._id.toString()) {
+			throw new HttpException(400, "CANNOT_LEAVE_CREW_OWNER");
+		}
+
+		await crew.updateOne({
+			$pull: { members: member._id },
+		});
+
+		return res.sendStatus(204);
+	}
+
+	@Post(Endpoints.CrewsKickMember)
+	@CatchError()
+	@IsAuthenticated()
 	async kick_member(req: Request, res: Response) {
 		const { user_id, code } = req.body;
 		const admin: IUserDocument = res.locals.user;
@@ -487,10 +478,13 @@ class CrewsRepository {
 		return res.sendStatus(204);
 	}
 
+	@Put(Endpoints.CrewsUpdateConfig)
 	@CatchError()
-	async get_rank(req: Request, res: Response) {
+	@IsAuthenticated()
+	async update_config(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
-		const { crew_id, show_all } = req.body;
+
+		const { crew_id } = req.body;
 
 		const crew = await CrewsModel.findById(crew_id);
 
@@ -498,123 +492,85 @@ class CrewsRepository {
 			throw new HttpException(404, "CREW_NOT_FOUND");
 		}
 
-		const is_member = crew.members.some(
-			(member) => member.user.toString() === user._id.toString()
+		const is_admin = crew.members.some(
+			(member) =>
+				member.user.toString() === user._id.toString() && member.is_admin
 		);
 
-		if (!is_member) {
+		if (!is_admin) {
 			throw new HttpException(403, "FORBIDDEN");
 		}
 
-		const crew_populated = await crew.populate<{
-			members: (TCrewMember & { user: TUser })[];
-		}>("members");
+		const { name, visibility, rules, lose_streak_in_days, streak } = req.body;
 
-		const rank = crew_populated.members
-			.map((member) => ({
-				_id: member.user._id,
-				name: member.user.name,
-				avatar: member.user.avatar,
-				character: member.user.character,
-				coins: member.user.coins || 0,
-			}))
-			.sort((a, b) => {
-				return a.coins < b.coins ? 1 : -1;
-			});
+		const updated_crew = await CrewsModel.findByIdAndUpdate(
+			crew_id,
+			{
+				visibility,
+				rules,
+				lose_streak_in_days,
+				streak,
+			},
+			{ new: true }
+		);
 
-		if (!show_all) {
-			const first_three = rank.slice(0, 3);
-
-			return res.status(200).json(first_three);
-		}
-
-		return res.status(200).json(rank);
+		return res.status(200).json(updated_crew);
 	}
 
+	@Put(Endpoints.CrewsUpdateAdmins)
 	@CatchError()
-	async get_activities(req: Request, res: Response) {
-		const { crew_id } = req.body;
-		const { start_date, end_date } = req.query;
+	@IsAuthenticated()
+	async update_admin(req: Request, res: Response) {
+		const { user_id, code, set_admin } = req.body;
 
-		const start_date_obj = start_date
-			? new Date(start_date as string)
-			: new Date();
+		const admin: IUserDocument = res.locals.user;
 
-		const end_date_obj = end_date ? new Date(end_date as string) : new Date();
-
-		start_date_obj.setHours(0, 0, 0, 0);
-		end_date_obj.setHours(23, 59, 59, 999);
-
-		const crew = await CrewsModel.findById(crew_id);
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
+		const user = await UsersModel.findById(user_id);
+		if (!user) {
+			throw new HttpException(404, "USER_NOT_FOUND");
 		}
 
-		const workouts = await WorkoutsModel.find({
-			shared_to: crew._id,
-			user: { $in: crew.members.map((m) => m.user) },
-			date: {
-				$gte: start_date_obj,
-				$lt: end_date_obj,
-			},
+		const crew = await CrewsModel.findOne({
+			code,
 		});
 
-		return res.status(200).json(workouts);
-	}
-
-	@CatchError()
-	async get_activities_days(req: Request, res: Response) {
-		const { start_date, end_date, crew_id } = req.query;
-
-		const start_date_obj = start_date
-			? new Date(start_date as string)
-			: new Date();
-
-		const end_date_obj = end_date ? new Date(end_date as string) : new Date();
-
-		start_date_obj.setHours(0, 0, 0, 0);
-		end_date_obj.setHours(23, 59, 59, 999);
-
-		const crew = await CrewsModel.findById(crew_id);
 		if (!crew) {
 			throw new HttpException(404, "CREW_NOT_FOUND");
 		}
 
-		const workouts = await WorkoutsModel.aggregate([
-			{
-				$match: {
-					shared_to: crew._id,
-					user: { $in: crew.members.map((m) => m.user) },
-					date: {
-						$gte: start_date_obj,
-						$lt: end_date_obj,
-					},
-				},
-			},
-			{
-				$group: {
-					_id: {
-						year: { $year: "$date" },
-						month: { $month: "$date" },
-						day: { $dayOfMonth: "$date" },
-					},
-					count: { $sum: 1 },
-				},
-			},
-			{
-				$sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 },
-			},
-		]);
+		const admin_in_crew = crew.members.some(
+			(adm) => adm.user.toString() === admin._id.toString() && adm.is_admin
+		);
 
-		const activities_days = workouts.map((workout) => ({
-			date: new Date(workout._id.year, workout._id.month - 1, workout._id.day),
-			count: workout.count,
-		}));
+		if (!admin_in_crew) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
 
-		return res.status(200).json(activities_days);
+		const user_in_crew = crew.members.find(
+			(member) => member.user.toString() === user._id.toString()
+		);
+
+		if (!user_in_crew) {
+			throw new HttpException(400, "USER_NOT_A_MEMBER");
+		}
+
+		await CrewsModel.updateOne(
+			{
+				"members._id": user_in_crew._id,
+			},
+			{
+				$set: {
+					"members.$.is_admin": set_admin,
+				},
+			}
+		);
+
+		return res.sendStatus(204);
 	}
 
+	@Put(Endpoints.CrewsFavorite)
 	@CatchError()
+	@IsAuthenticated()
 	async favorite(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
 		const { crew_id } = req.body;
@@ -648,6 +604,79 @@ class CrewsRepository {
 		await user.updateOne({
 			$pull: { favorites: crew._id },
 		});
+
+		return res.sendStatus(204);
+	}
+
+	@Put(Endpoints.CrewsUpdateBanner)
+	@CatchError()
+	@IsAuthenticated()
+	@Upload()
+	async update_banner(req: Request, res: Response) {
+		const user: IUserDocument = res.locals.user;
+		const file = req.file as TUploadedFile;
+		const { crew_id } = req.body;
+
+		if (!file) {
+			throw new HttpException(400, "FILE_NOT_PROVIDED");
+		}
+
+		const crew = await CrewsModel.findById(crew_id);
+
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const is_admin = crew.members.some(
+			(member) =>
+				member.user.toString() === user._id.toString() && member.is_admin
+		);
+
+		if (!is_admin) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
+
+		if (crew.banner && crew.banner.public_id) {
+			await cloudinaryDestroy(crew.banner.public_id);
+		}
+
+		const banner: TFile = {
+			public_id: file.filename,
+			url: file.path,
+		};
+
+		const updated_crew = await CrewsModel.findByIdAndUpdate(
+			crew_id,
+			{ banner },
+			{ new: true }
+		);
+
+		return res.status(200).json(updated_crew);
+	}
+
+	@Delete(Endpoints.CrewsDelete)
+	@CatchError()
+	@IsAuthenticated()
+	async delete(req: Request, res: Response) {
+		const user: IUserDocument = res.locals.user;
+
+		const crew_id = req.params.id;
+
+		const crew = await CrewsModel.findById(crew_id);
+
+		if (!crew) {
+			throw new HttpException(404, "CREW_NOT_FOUND");
+		}
+
+		const is_owner = crew.created_by.toString() === user._id.toString();
+
+		if (!is_owner) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
+
+		await crew.deleteOne();
+
+		// [Notify] - Notify the crew members that the crew has been deleted
 
 		return res.sendStatus(204);
 	}

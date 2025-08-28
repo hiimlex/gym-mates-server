@@ -7,17 +7,16 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"outDir": "dist",
-		"baseUrl": "./src",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"paths": {
-			"types/*": ["./types/*"],
-			"@core/*": ["./core/*"],
-			"@modules/*": ["./modules/*"],
-			"@utils/*": ["./utils/*"],
-			"@config/*": ["./config/*"],
-			"@test/*": ["./test/*"],
-			"@middlewares/*": ["./middlewares/*"]
+			"types/*": ["./src/types/*"],
+			"@core/*": ["./src/core/*"],
+			"@modules/*": ["./src/modules/*"],
+			"@utils/*": ["./src/utils/*"],
+			"@config/*": ["./src/config/*"],
+			"@test/*": ["./src/test/*"],
+			"@middlewares/*": ["./src/middlewares/*"]
 		}
 	},
 	"include": ["./src/**/*"],

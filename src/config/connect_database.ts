@@ -9,7 +9,6 @@ export async function connect_database(): Promise<Mongoose | null> {
 		}
 
 		const instance = await mongoose.connect(process.env.DB_URL || "");
-		console.log("Database connected successfully");
 		add_mongo_transport();
 
 

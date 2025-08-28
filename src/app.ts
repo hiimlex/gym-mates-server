@@ -4,7 +4,7 @@ import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application } from "express";
-import { create_apollo_server } from "gpql/gpql";
+import { create_apollo_server } from "./gpql/gpql";
 import mongoose from "mongoose";
 import { JwtSecret } from "types/generics";
 import { routers } from "./routers/routers";
@@ -39,7 +39,6 @@ export class Server {
 
 		if (db) {
 			this.db = db;
-			console.log("Database connected successfully");
 		}
 
 		this.set_middlewares();
@@ -67,7 +66,12 @@ export class Server {
 		if (process.env.NODE_ENV !== "test") {
 			const PORT = process.env.PORT || 8080;
 			this.app.listen(PORT, () => {
-				console.log(`Server is running on port ${PORT}`);
+				console.log("");
+				console.log("===================================");
+				console.log(
+					`Server is running on http://localhost:${PORT}${this.prefix}`
+				);
+				console.log("===================================");
 			});
 		}
 	}

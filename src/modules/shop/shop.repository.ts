@@ -1,7 +1,7 @@
 import { HttpException } from "@core/http_exception";
 import { AchievementsModel, ItemsModel } from "@modules/items";
 import { diacriticSensitiveRegex } from "@utils/diacriticSensitiveRegex";
-import CatchError from "decorators/catch_error";
+import { CatchError } from "../../decorators/catch_error";
 import { Request, Response } from "express";
 import { RootFilterQuery, SortOrder, Types } from "mongoose";
 import {
@@ -12,10 +12,16 @@ import {
 	JourneyEventSchemaType,
 	TJourneyEvent,
 } from "types/collections";
+import { DecoratorController } from "@core/base_controller";
+import { Get, Post } from "../../decorators/routes.decorator";
+import { Endpoints } from "types/generics";
+import { IsAuthenticated } from "../../decorators/is_authenticated";
 
-class ShopRepository {
+class ShopRepository extends DecoratorController {
+	@Post(Endpoints.ShopBuy)
 	@CatchError()
-	async buy(req: Request, res: Response) {
+	@IsAuthenticated()
+	protected async buy(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
 		const journey: IJourneyDocument = res.locals.journey;
 
@@ -100,8 +106,10 @@ class ShopRepository {
 		return res.sendStatus(204);
 	}
 
+	@Get(Endpoints.ShopListItems)
 	@CatchError()
-	async list_items(req: Request, res: Response) {
+	@IsAuthenticated()
+	protected async list_items(req: Request, res: Response) {
 		const journey: IJourneyDocument = res.locals.journey;
 
 		const { search, price_sort } = req.query;
