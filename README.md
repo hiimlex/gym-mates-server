@@ -1,4 +1,4 @@
-# GymMates API Documentation
+# Gym mates Server
 
 This document provides an overview of the GymMates API, including its endpoints, request and response formats, and examples for common operations.
 
