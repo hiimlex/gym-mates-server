@@ -1,0 +1,48 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Endpoints = void 0;
+exports.Endpoints = {
+    // Auth
+    AuthLogin: "/auth/login",
+    AuthSignUp: "/auth/sign-up",
+    AuthMe: "/auth/me",
+    // Crews
+    CrewsCreate: "/crews",
+    CrewsList: "/crews",
+    CrewsGetByCode: "/crews/get-by-code/:code",
+    CrewsGetRank: "/crews/get-rank",
+    CrewsGetActivities: "/crews/get-activities",
+    CrewsGetActivitiesDays: "/crews/get-activities/days",
+    CrewsUpdate: "/crews/:id",
+    CrewsUpdateConfig: "/crews/update-config/",
+    CrewsDelete: "/crews/:id",
+    CrewsJoin: "/crews/join",
+    CrewsLeave: "/crews/leave",
+    CrewsUpdateAdmins: "/crews/update-admins/",
+    CrewsAcceptMember: "/crews/accept-member",
+    CrewsKickMember: "/crews/kick-member",
+    CrewsRejectMember: "/crews/reject-member",
+    CrewsFavorite: "/crews/favorite",
+    CrewsUpdateBanner: "/crews/update-banner",
+    // Users
+    UsersCreate: "/users",
+    UsersList: "/users",
+    UsersGet: "/users/:id",
+    UsersUpdateProfile: "/users/update-profile",
+    UsersDelete: "/users/:id",
+    UsersFollow: "/users/follow",
+    UsersUnfollow: "/users/unfollow",
+    UsersCreateHealthy: "/users/healthy",
+    UsersSelectTitle: "/users/select-title",
+    UsersUpdateAvatar: "/users/update-avatar",
+    UsersGetJourney: "/users/journey",
+    UsersGetFollowersInfo: "/users/followers-info",
+    UsersRegisterDeviceToken: "/users/register-device-token",
+    // Workouts
+    WorkoutsCreate: "/workouts",
+    // Shop
+    ShopBuy: "/shop/buy",
+    ShopListItems: "/shop/items",
+    // Items
+    ItemsCreateFigure: "/items/figure",
+};
