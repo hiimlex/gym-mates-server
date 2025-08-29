@@ -1,4 +1,4 @@
-import { create_user_mock } from "__mocks__";
+import { create_user_mock } from "../__mocks__";
 import TestAgent from "supertest/lib/agent";
 import { IUserDocument } from "types/collections";
 import { ApiPrefix, Endpoints } from "types/generics";

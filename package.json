@@ -6,7 +6,7 @@
 		"start": "node dist/index.js",
 		"watch-node": "nodemon dist/src/index.js",
 		"dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
-		"build": "npx tsc && npx tspath -f",
+		"build": "npx tsc && npx tsc-alias",
 		"watch-ts": "npx tsc -w",
 		"test": "npx cross-env NODE_ENV=test jest --no-cache --watchAll=false --color",
 		"test:watch": "npx cross-env NODE_ENV=test jest --watch --no-cache --onlyChanged ",
@@ -59,6 +59,7 @@
 		"ts-jest": "^29.4.0",
 		"ts-node": "^10.9.2",
 		"ts-node-dev": "^2.0.0",
+		"tsc-alias": "^1.8.16",
 		"tsconfig-paths": "^4.2.0",
 		"tspath": "^2.6.8",
 		"typescript": "^5.8.3"

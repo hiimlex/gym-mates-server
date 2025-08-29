@@ -44,7 +44,7 @@ class CrewsRepository extends DecoratorController {
 	@IsAuthenticated()
 	async get_rank(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
-		const { crew_id, show_all } = req.body;
+		const { crew_id, show_all } = req.query;
 
 		const crew = await CrewsModel.findById(crew_id);
 
@@ -62,7 +62,7 @@ class CrewsRepository extends DecoratorController {
 
 		const crew_populated = await crew.populate<{
 			members: (TCrewMember & { user: TUser })[];
-		}>("members");
+		}>("members.user");
 
 		const rank = crew_populated.members
 			.map((member) => ({

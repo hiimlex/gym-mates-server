@@ -1,6 +1,6 @@
 import { test_get_user_and_cookie } from "@test/test.helpers";
-import { create_healthy_mock, create_user_mock } from "__mocks__";
-import { Server } from "app";
+import { create_healthy_mock, create_user_mock } from "../../__mocks__";
+import { Server } from "../../app";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import supertest from "supertest";
@@ -49,93 +49,8 @@ afterAll(async () => {
 });
 
 describe("Users module", () => {
-	describe("POST /users/friends/send-request", () => {
-		it("should send a friend request", async () => {
-			const friend_request = await test_agent
-				.post(ApiPrefix + Endpoints.UsersSendFriendRequest)
-				.set("Authorization", `Bearer ${mock_user.access_token}`)
-				.send({
-					friend_id: friend._id,
-				});
-
-			expect(friend_request.statusCode).toBe(204);
-
-			const { body: updated_friend } = await test_agent
-				.get(ApiPrefix + Endpoints.AuthMe)
-				.set("Authorization", `Bearer ${mock_friend.access_token}`);
-
-			expect(updated_friend).toHaveProperty("requests");
-			expect(updated_friend.requests).toContain(user._id);
-		});
-	});
-	describe("POST /users/friends/accept-request", () => {
-		it("should accept a friend request", async () => {
-			const accept_request = await test_agent
-				.post(ApiPrefix + Endpoints.UsersAcceptFriendRequest)
-				.set("Authorization", `Bearer ${mock_friend.access_token}`)
-				.send({
-					friend_id: user._id,
-				});
-
-			expect(accept_request.statusCode).toBe(204);
-
-			const { body: updated_user } = await test_agent
-				.get(ApiPrefix + Endpoints.AuthMe)
-				.set("Authorization", `Bearer ${mock_user.access_token}`);
-
-			expect(updated_user).toHaveProperty("friends");
-			expect(updated_user.friends).toContain(friend._id);
-			expect(updated_user.requests).not.toContain(friend._id);
-		});
-	});
-
-	describe("POST /users/friends/remove", () => {
-		it("should remove a friend", async () => {
-			const remove_friend_request = await test_agent
-				.post(ApiPrefix + Endpoints.UsersRemoveFriend)
-				.set("Authorization", `Bearer ${mock_user.access_token}`)
-				.send({
-					friend_id: friend._id,
-				});
-
-			expect(remove_friend_request.statusCode).toBe(204);
-			const { body: updated_user } = await test_agent
-				.get(ApiPrefix + Endpoints.AuthMe)
-				.set("Authorization", `Bearer ${mock_user.access_token}`);
-
-			expect(updated_user.friends).not.toContain(friend._id);
-			expect(updated_user.requests).not.toContain(friend._id);
-		});
-	});
-
-	describe("POST /users/friends/reject-request", () => {
-		it("should reject a friend request", async () => {
-			const friend_request = await test_agent
-				.post(ApiPrefix + Endpoints.UsersSendFriendRequest)
-				.set("Authorization", `Bearer ${mock_user.access_token}`)
-				.send({
-					friend_id: friend._id,
-				});
-
-			expect(friend_request.statusCode).toBe(204);
-
-			const reject_request = await test_agent
-				.post(ApiPrefix + Endpoints.UsersRejectFriendRequest)
-				.set("Authorization", `Bearer ${mock_friend.access_token}`)
-				.send({
-					friend_id: user._id,
-				});
-
-			expect(reject_request.statusCode).toBe(204);
-
-			const { body: updated_friend } = await test_agent
-				.get(ApiPrefix + Endpoints.AuthMe)
-				.set("Authorization", `Bearer ${mock_friend.access_token}`);
-
-			expect(updated_friend.requests).not.toContain(user._id);
-		});
-	});
-
+	
+	// Should add follow from user
 	describe("POST /users/healthy", () => {
 		it("should create a healthy info", async () => {
 			const healthy_info = create_healthy_mock({

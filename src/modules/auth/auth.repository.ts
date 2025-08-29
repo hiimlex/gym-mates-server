@@ -23,7 +23,7 @@ import { UsersModel } from "../users";
 class AuthRepository extends DecoratorController {
 	@Post(Endpoints.AuthLogin)
 	@CatchError()
-	protected async login(req: Request, res: Response) {
+	async login(req: Request, res: Response) {
 		const { email, password } = req.body;
 
 		const user = await UsersModel.findOne({ email });
@@ -54,7 +54,7 @@ class AuthRepository extends DecoratorController {
 	@Post(Endpoints.AuthSignUp)
 	@CatchError()
 	@Upload()
-	protected async sign_up(req: Request, res: Response) {
+	async sign_up(req: Request, res: Response) {
 		const file = req.file as TUploadedFile;
 		const { email, password, name } = req.body;
 		let avatar: TFile | undefined = undefined;
@@ -108,7 +108,7 @@ class AuthRepository extends DecoratorController {
 
 	@Get(Endpoints.AuthMe)
 	@IsAuthenticated()
-	protected async me(req: Request, res: Response) {
+	async me(req: Request, res: Response) {
 		const user: IUserDocument = res.locals.user;
 
 		if (!user) {
