@@ -10,7 +10,7 @@ export async function connect_database(): Promise<Mongoose | null> {
 			throw new Error("Database is already connected");
 		}
 
-		console.log("Connecting to database...", process.env);
+		console.log("Connecting to database...", process.env['DB_URL'], process.env.DB_URL);
 
 		const instance = await mongoose.connect(process.env.DB_URL || "");
 		add_mongo_transport();
