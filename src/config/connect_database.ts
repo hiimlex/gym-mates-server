@@ -1,6 +1,8 @@
 import mongoose, { Mongoose } from "mongoose";
 import { add_mongo_transport } from "./logger.config";
 
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function connect_database(): Promise<Mongoose | null> {
 	try {
@@ -12,7 +14,6 @@ export async function connect_database(): Promise<Mongoose | null> {
 
 		const instance = await mongoose.connect(process.env.DB_URL || "");
 		add_mongo_transport();
-
 
 		return instance;
 	} catch (error) {
