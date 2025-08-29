@@ -10,7 +10,8 @@
 		"watch-ts": "npx tsc -w",
 		"test": "npx cross-env NODE_ENV=test jest --no-cache --watchAll=false --color",
 		"test:watch": "npx cross-env NODE_ENV=test jest --watch --no-cache --onlyChanged ",
-		"test:coverage": "npx cross-env NODE_ENV=test jest --coverage"
+		"test:coverage": "npx cross-env NODE_ENV=test jest --coverage",
+		"build:deploy": "npm run build && git subtree split --prefix dist -b dist && git push -u origin dist"
 	},
 	"keywords": [],
 	"author": "",
