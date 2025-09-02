@@ -17,7 +17,8 @@
 			"@utils/*": ["./src/utils/*"],
 			"@config/*": ["./src/config/*"],
 			"@test/*": ["./src/test/*"],
-			"@middlewares/*": ["./src/middlewares/*"]
+			"@middlewares/*": ["./src/middlewares/*"],
+			"@decorators/*": ["./src/decorators/*"]
 		}
 	},
 	"include": ["./src/**/*", "src/scripts/items.data.ts"],
