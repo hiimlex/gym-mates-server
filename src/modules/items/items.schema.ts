@@ -1,7 +1,9 @@
 import { timestamps } from "@config/schema.config";
 import { FileSchema } from "@modules/files";
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import {
+	AchievementKeys,
+	AchievementRarity,
 	Collections,
 	IAchievementDocument,
 	IFigureDocument,
@@ -9,6 +11,9 @@ import {
 	IItemModel,
 	ItemCategory,
 	ITitleDocument,
+	SkinPiece,
+	SkinSex,
+	SkinSlug,
 } from "types/collections";
 
 const ItemSchema = new Schema(
@@ -19,10 +24,11 @@ const ItemSchema = new Schema(
 			enum: Object.values(ItemCategory),
 			required: true,
 		},
-		price: { type: Number, default: 0, required: true },
+		price: { type: Number, required: true },
 		requirements: {
 			type: [String],
 			default: [],
+			enum: Object.values(AchievementKeys),
 			required: true,
 		},
 	},
@@ -54,6 +60,7 @@ const FiguresModel = ItemsModel.discriminator<IFigureDocument>(
 		},
 		{
 			versionKey: false,
+			timestamps,
 		}
 	)
 );
@@ -88,45 +95,82 @@ const SkinsModel = ItemsModel.discriminator<IFigureDocument>(
 		{
 			file: FileSchema,
 			preview: FileSchema,
+			piece: {
+				type: String,
+				enum: Object.values(SkinPiece),
+				required: true,
+			},
+			sex: {
+				type: String,
+				enum: Object.values(SkinSex),
+				required: true,
+			},
+			slug: {
+				type: String,
+				required: true,
+				unique: true,
+				enum: Object.values(SkinSlug),
+			},
 		},
 		{
 			versionKey: false,
+			timestamps,
 		}
 	)
 );
 
 const TitlesModel = ItemsModel.discriminator<ITitleDocument>(
 	ItemCategory.Title,
-	new Schema({
-		title: {
-			type: String,
-			required: true,
+	new Schema(
+		{
+			title: {
+				type: String,
+				required: true,
+			},
 		},
-	})
+		{ versionKey: false, timestamps }
+	)
 );
 
 const AchievementsModel = ItemsModel.discriminator<IAchievementDocument>(
 	ItemCategory.Achievement,
-	new Schema({
-		key: {
-			type: String,
-			unique: true,
-			required: true,
+	new Schema(
+		{
+			key: {
+				type: String,
+				enum: Object.values(AchievementKeys),
+				unique: true,
+				required: true,
+			},
+			description: {
+				type: String,
+				required: true,
+			},
+			rarity: {
+				type: String,
+				enum: Object.values(AchievementRarity),
+				required: true,
+			},
+			price: {
+				type: Number,
+				required: false,
+			},
+			name: {
+				type: String,
+				required: false,
+			},
 		},
-		description: {
-			type: String,
-			required: true,
-		},
-	})
+		{ versionKey: false }
+	)
 );
 
 export {
-	ItemSchema,
-	ItemsModel,
-	FiguresModel,
-	TitlesModel,
 	AchievementsModel,
 	AvatarsModel,
 	BadgesModel,
+	FiguresModel,
+	ItemSchema,
+	ItemsModel,
 	SkinsModel,
+	TitlesModel,
 };

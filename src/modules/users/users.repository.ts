@@ -24,6 +24,7 @@ import { UsersModel } from "./users.schema";
 import { Get, Post, Put } from "../../decorators/routes.decorator";
 import { IsAuthenticated } from "../../decorators/is_authenticated";
 import { Upload } from "../../decorators/upload.decorator";
+import { cloudinaryDestroy } from "@config/cloudinary.config";
 
 class UsersRepository extends DecoratorController {
 	@Get(Endpoints.UsersGetJourney)
@@ -267,6 +268,10 @@ class UsersRepository extends DecoratorController {
 
 		if (!user) {
 			throw new HttpException(404, "USER_NOT_FOUND");
+		}
+
+		if (user.avatar?.public_id) {
+			await cloudinaryDestroy(user.avatar.public_id);
 		}
 
 		const updated_user = await UsersModel.findByIdAndUpdate(

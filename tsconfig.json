@@ -9,6 +9,7 @@
 		"outDir": "dist",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
+		"baseUrl": "./",
 		"paths": {
 			"types/*": ["./src/types/*"],
 			"@core/*": ["./src/core/*"],
@@ -19,6 +20,6 @@
 			"@middlewares/*": ["./src/middlewares/*"]
 		}
 	},
-	"include": ["./src/**/*"],
+	"include": ["./src/**/*", "src/scripts/items.data.ts"],
 	"exclude": ["node_modules", "dist"]
 }

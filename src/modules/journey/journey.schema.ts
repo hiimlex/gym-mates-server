@@ -73,6 +73,17 @@ const JourneySchema = new Schema(
 			required: true,
 			default: [],
 		},
+		longest_streak: {
+			type: Number,
+			default: 0,
+			required: false,
+		},
+		completed_missions: {
+			type: [Schema.Types.ObjectId],
+			ref: Collections.Missions,
+			default: [],
+			required: true,
+		}
 	},
 	{ versionKey: false, timestamps, collection: Collections.Journeys }
 );

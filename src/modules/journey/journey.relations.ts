@@ -25,7 +25,7 @@ const ItemUnionTC = schemaComposer.createUnionTC({
 	types: [TitlesTC, AchievementsTC, BadgesTC, AvatarsTC, SkinsTC, FiguresTC],
 	resolveType: (value: any) => {
 		const mapped = ItemCategoryTc[value.category as ItemCategory];
-		console.log("Resolving type for item with category:", value.category, "Mapped to:", mapped);
+
 		if (!mapped) throw new Error(`Unknown item type: ${value.category}`);
 		return mapped;
 	},
@@ -47,8 +47,6 @@ JourneyTC.addFields({
 				path: "inventory.item",
 			});
 
-			console.log("Populated inventory:", populated.inventory);
-
 			let items = (populated.inventory || []) as Array<{
 				item: any;
 				owned_at: Date;
@@ -62,7 +60,6 @@ JourneyTC.addFields({
 						(item) => item.item.category === filter.category
 					);
 				}
-
 
 				if (filter.search) {
 					const searchRegex = new RegExp(filter.search, "i");

@@ -1,4 +1,4 @@
-## Coin system
+# Coin system
 
 Every time the User do a workout there's a coin for that, let's trust the Mate about the workout, just remember that this is not a competition.
 
@@ -12,7 +12,7 @@ Let's talk about the streaks, the streaks are classified as weekends, weekly, mo
 
 The bounties are unique, and validated for all crew streaks, so if the User is in a crew that's just daily, weekly and another that's weekly and monthly, the User will get the daily, weekly and monthly bounty one single time, every time It earn a bounty, also the user will have a receipt for every earned coin. The bounty count resets every time the User receive.
 
-#### ATTENTION
+### ATTENTION
 
 All the workout have the same value, if the User do more than one workout by day, It does not have the same effect for coin system, the User will only get one bounty per day, It will work the same if User join multiple crews, even if the User share one workout to one crew and then another in another crew, only the first workout will count to the system, the share feature are only to mention the workout in the crews activities.
 
@@ -20,7 +20,15 @@ The streak bounty works as the same from daily bounty, so if the user joins a cr
 
 Don't fight at all with your mates about earning more coins, just add more streaks count to your crew. :)
 
-#### Use cases
+### Definitions 
+
+Daily = 1 day \
+Weekends = only saturday or sunday \
+Week = 7 days \
+Month = 30 days \
+Year = 365 days
+
+### Use cases
 
 E.g. User do daily workout in 30º day in crew with weekly and monthly streak
 
@@ -47,10 +55,9 @@ daily streak  = +1 coins
 total         = +4 coins
 ```
 
-#### Summary 
+### Lose Streak
 
-Daily = 1 day
-Weekends = only saturday and sunday
-Week = 7 days
-Month = 30 days
-Year = 365 days
+To lose a streak, the user needs to fail for the days defined on the crews rule "Lose streak at fail for", if the user is in multiple crews, the lose streak days are defined by the minimum value. So if there's a crew with 5 fail days and another with 2 fail days, if the user pass 2 days without do any workout, the user loses the streak. 
+
+To recover the streak, the user needs to be in one crew with the rule "allow PAID on past 2 days", this will allow the user add an workout on past day, eg. the day he loses the
+

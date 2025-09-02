@@ -42,4 +42,7 @@ export const Endpoints = {
 	ShopListItems: "/shop/items",
 	// Items
 	ItemsCreateFigure: "/items/figure",
+	// Missions
+	MissionsList: "/missions",
+	MissionsClaim: "/missions/claim",
 };

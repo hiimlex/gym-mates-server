@@ -2,6 +2,7 @@ import {
 	AuthRepositoryImpl,
 	CrewsRepositoryImpl,
 	ItemsRepositoryImpl,
+	MissionsRepositoryImpl,
 	ShopRepositoryImpl,
 	UsersRepositoryImpl,
 	WorkoutsRepositoryImpl,
@@ -14,4 +15,5 @@ export const routers = [
 	WorkoutsRepositoryImpl.router,
 	ItemsRepositoryImpl.router,
 	ShopRepositoryImpl.router,
+	MissionsRepositoryImpl.router,
 ];

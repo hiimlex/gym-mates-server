@@ -1,6 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 import dotenv from "dotenv";
+import { Request } from "express";
 dotenv.config();
 
 cloudinary.config({
@@ -19,5 +20,9 @@ export const storage = new CloudinaryStorage({
 	params: {
 		folder: "gym-mates",
 		allowedFormats: ["jpg", "png", "jpeg", "svg", "gif"],
+		// this will use the original file name as the public_id
+		public_id: (_: Request, file: Express.Multer.File) => {
+			return file.originalname.split(".")[0];
+		},
 	},
 });

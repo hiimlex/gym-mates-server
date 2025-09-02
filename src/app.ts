@@ -39,6 +39,7 @@ export class Server {
 
 		if (db) {
 			this.db = db;
+			console.log("Database connected");
 		}
 
 		this.set_middlewares();
@@ -46,6 +47,8 @@ export class Server {
 		this.init_routes();
 
 		const apollo_server = await create_apollo_server();
+
+		console.log("Apollo Server created");
 
 		if (apollo_server) {
 			this.app.use(

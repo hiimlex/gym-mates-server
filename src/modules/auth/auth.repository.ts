@@ -126,10 +126,12 @@ class AuthRepository extends DecoratorController {
 		return res.status(200).json(user);
 	}
 
-	public async is_authenticated(req: Request, res: Response, next: NextFunction) {
+	public async is_authenticated(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
 		const access_token = req.headers.authorization?.split(" ")[1];
-
-		console.log("is_authenticated Middleware", access_token);
 
 		if (!access_token) {
 			throw new HttpException(401, "UNAUTHORIZED");
