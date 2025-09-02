@@ -1,12 +1,12 @@
 import { DecoratorController } from "@core/base_controller";
+import { HttpException } from "@core/http_exception";
+import { CatchError } from "@decorators/catch_error";
+import { IsAuthenticated } from "@decorators/is_authenticated";
+import { Get } from "@decorators/routes.decorator";
+import { JourneyModel } from "@modules/journey";
 import { Request, Response } from "express";
-import { CatchError } from "src/decorators/catch_error";
-import { IsAuthenticated } from "src/decorators/is_authenticated";
-import { Get } from "src/decorators/routes.decorator";
-import { Endpoints } from "types/generics";
-import { MissionsModel } from "./missions.schema";
+import { RootFilterQuery, Types } from "mongoose";
 import {
-	AchievementKeys,
 	IJourneyDocument,
 	IMissionDocument,
 	IUserDocument,
@@ -14,10 +14,9 @@ import {
 	JourneyEventSchemaType,
 	TJourneyEvent,
 } from "types/collections";
+import { Endpoints } from "types/generics";
 import { AchievementsModel } from "../items";
-import { RootFilterQuery, Types } from "mongoose";
-import { HttpException } from "@core/http_exception";
-import { JourneyModel } from "@modules/journey";
+import { MissionsModel } from "./missions.schema";
 
 class MissionsRepository extends DecoratorController {
 	@Get(Endpoints.MissionsList)
@@ -129,18 +128,18 @@ class MissionsRepository extends DecoratorController {
 			}
 		}
 		// add mission to journey completed_missions
-		// 
+		//
 		journey.completed_missions.push(mission._id);
 		// give rewards
 		if (mission.reward) {
 			user.coins += mission.reward;
 		}
 		// save entities
-		// 
+		//
 		await journey.save();
 		await user.save();
 		// generate journey event for the mission completion
-		// 
+		//
 		const event: TJourneyEvent = {
 			_id: new Types.ObjectId(),
 			schema: JourneyEventSchemaType.Mission,
