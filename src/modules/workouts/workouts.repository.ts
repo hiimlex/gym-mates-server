@@ -1,7 +1,7 @@
+import { DecoratorController } from "@core/base_controller";
 import { HttpException } from "@core/http_exception";
 import { CrewsModel } from "@modules/crews";
 import { calculate_coins } from "@utils/coin.helper";
-import { handle_error } from "@utils/handle_error";
 import {
 	recalculate_user_streak,
 	validate_workout_rules,
@@ -17,14 +17,12 @@ import {
 	TJourneyEvent,
 	TUploadedFile,
 } from "types/collections";
-import { WorkoutsModel } from "./workouts.schema";
-import { cloudinaryDestroy } from "@config/cloudinary.config";
-import { DecoratorController } from "@core/base_controller";
-import { Post } from "../../decorators/routes.decorator";
 import { Endpoints } from "types/generics";
-import { Upload } from "../../decorators/upload.decorator";
 import { CatchError } from "../../decorators/catch_error";
 import { IsAuthenticated } from "../../decorators/is_authenticated";
+import { Post } from "../../decorators/routes.decorator";
+import { Upload } from "../../decorators/upload.decorator";
+import { WorkoutsModel } from "./workouts.schema";
 
 class WorkoutsRepository extends DecoratorController {
 	@Post(Endpoints.WorkoutsCreate)

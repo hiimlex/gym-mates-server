@@ -73,6 +73,11 @@ const JourneySchema = new Schema(
 			required: true,
 			default: [],
 		},
+		longest_streak: {
+			type: Number,
+			default: 0,
+			required: false,
+		},
 	},
 	{ versionKey: false, timestamps, collection: Collections.Journeys }
 );

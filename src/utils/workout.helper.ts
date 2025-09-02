@@ -67,6 +67,7 @@ export async function validate_workout_rules(
 		const crew_created_dates = crews.map(
 			(crew) => !!crew.created_at && new Date(crew.created_at)
 		);
+		
 		const oldest_crew_date = new Date(
 			Math.min(...crew_created_dates.map((date) => date.getTime()))
 		);
@@ -84,17 +85,18 @@ export async function recalculate_user_streak(
 	res: Response
 ) {
 	return new Promise<void>(async (resolve, reject) => {
+		// check if user has streak or workouts
 		const user_has_streak = (user.day_streak || 0) > 0;
 		const user_workouts = await WorkoutsModel.find({
 			user: user._id,
 		});
-
+		// If user has streak or no workouts, do nothing
 		if (user_has_streak || user_workouts.length === 0) {
 			resolve();
 
 			return;
 		}
-
+		// get user journey
 		const journey = await JourneyModel.findOne({
 			user: user._id,
 		});
@@ -102,30 +104,30 @@ export async function recalculate_user_streak(
 		if (!journey) {
 			reject(new HttpException(404, "JOURNEY_NOT_FOUND"));
 		}
-
+		// get all lost streak events
 		const lost_streak_at = journey?.events?.filter((event) => {
 			if (event.action === JourneyEventAction.LOSE_STREAK) {
 				return event;
 			}
 		});
-
+		// If no lost streak events, do nothing
 		if (!lost_streak_at || lost_streak_at?.length === 0) {
 			resolve();
 
 			return;
 		}
-
+		// get the last two lost streak events
 		let streak_count_start_date: Date | undefined = undefined;
 		let streak_count_end_date: Date | undefined = undefined;
 		let last_lost_streak_event: TJourneyEvent | undefined = undefined;
-
+		// If only one lost streak event, get the date from user created at
 		if (lost_streak_at && lost_streak_at.length < 2) {
 			const last_event = lost_streak_at[0];
 			streak_count_end_date = new Date(last_event.created_at);
 			streak_count_start_date = new Date(user.created_at);
 			last_lost_streak_event = last_event;
 		}
-
+		// If more than one lost streak event, get the date from the last two events
 		if (lost_streak_at && lost_streak_at.length >= 2) {
 			const first_event = lost_streak_at[0];
 			const second_event = lost_streak_at[1];
@@ -134,7 +136,7 @@ export async function recalculate_user_streak(
 
 			last_lost_streak_event = first_event;
 		}
-		// [TODO] - Get the workouts between the dates to recalculate the streak
+		// Get the workouts between the dates to recalculate the streak
 		const workouts = await WorkoutsModel.find({
 			user: user._id,
 			date: {
@@ -142,13 +144,13 @@ export async function recalculate_user_streak(
 				$lt: streak_count_end_date?.setHours(23, 59, 59, 999),
 			},
 		});
-
+		// update user streak
 		const streak_count = workouts.length;
 		res.locals.old_streak_count = user.day_streak || 0;
 
 		user.day_streak = streak_count;
 		await user.save();
-		// [TODO] - Remove the last streak event from journey
+		// remove the last streak event from journey
 		if (last_lost_streak_event) {
 			await JourneyModel.updateOne(
 				{ _id: user.journey },

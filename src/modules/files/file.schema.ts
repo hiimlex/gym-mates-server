@@ -1,6 +1,5 @@
 import { timestamps } from "@config/schema.config";
-import { model, Schema } from "mongoose";
-import { Collections, IFileDocument, IFileModel } from "types/collections";
+import { Schema } from "mongoose";
 
 const FileSchema = new Schema(
 	{
@@ -9,7 +8,7 @@ const FileSchema = new Schema(
 			type: String,
 		},
 	},
-	{ versionKey: false, timestamps }
+	{ versionKey: false, timestamps, _id: false }
 );
 
 export { FileSchema };

@@ -4,6 +4,7 @@ export * from "./healthy";
 export * from "./items";
 export * from "./journey";
 export * from "./shop";
+export * from "./user_check_in";
 export * from "./user_device";
 export * from "./users";
 export * from "./workouts";

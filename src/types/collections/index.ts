@@ -1,3 +1,4 @@
+export * from "./achievements.model";
 export * from "./collections.model";
 export * from "./crews.model";
 export * from "./files.model";

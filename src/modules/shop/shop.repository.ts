@@ -146,9 +146,11 @@ class ShopRepository extends DecoratorController {
 			(achievement) => achievement.category + ":" + achievement.key
 		);
 
-		const locked_items = [];
 		// Check item requirements
-		const items_checked: any[] = await Promise.all(
+
+		const show_locked = Boolean(req.query.locked);
+
+		const items_checked = await Promise.all(
 			items.map(async (item) => {
 				let locked = false;
 				const items_requirements = item.requirements || [];
@@ -162,11 +164,17 @@ class ShopRepository extends DecoratorController {
 					locked = !user_met_requirements;
 				}
 
+				if (!show_locked && locked) {
+					return null;
+				}
+
 				return { ...item.toObject(), locked };
 			})
 		);
 
-		return res.status(200).json({ items: items_checked });
+		const final_items = items_checked.filter((item) => item !== null);
+
+		return res.status(200).json({ items: final_items });
 	}
 }
 

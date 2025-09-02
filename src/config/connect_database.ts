@@ -1,9 +1,6 @@
 import mongoose, { Mongoose } from "mongoose";
 import { add_mongo_transport } from "./logger.config";
 
-import dotenv from "dotenv";
-dotenv.config();
-
 export async function connect_database(): Promise<Mongoose | null> {
 	try {
 		if (mongoose.connection.readyState !== 0) {

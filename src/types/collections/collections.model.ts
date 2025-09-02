@@ -10,4 +10,5 @@ export const Collections = {
 	Figures: "Figures",
 	Files: "Files",
 	UserDevices: "UserDevices",
+	UserCheckIns: "UserCheckIns",
 };

@@ -9,6 +9,7 @@ import {
 } from "types/collections";
 import { JourneyModel } from "../journey";
 import { FileSchema } from "@modules/files";
+import { required } from "joi";
 
 const UsersSchema = new Schema(
 	{

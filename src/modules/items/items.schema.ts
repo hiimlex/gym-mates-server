@@ -1,7 +1,8 @@
 import { timestamps } from "@config/schema.config";
 import { FileSchema } from "@modules/files";
-import { model, Schema, Types } from "mongoose";
+import { model, Schema } from "mongoose";
 import {
+	AchievementRarity,
 	Collections,
 	IAchievementDocument,
 	IFigureDocument,
@@ -9,6 +10,8 @@ import {
 	IItemModel,
 	ItemCategory,
 	ITitleDocument,
+	SkinPiece,
+	SkinSex,
 } from "types/collections";
 
 const ItemSchema = new Schema(
@@ -54,6 +57,7 @@ const FiguresModel = ItemsModel.discriminator<IFigureDocument>(
 		},
 		{
 			versionKey: false,
+			timestamps,
 		}
 	)
 );
@@ -88,9 +92,20 @@ const SkinsModel = ItemsModel.discriminator<IFigureDocument>(
 		{
 			file: FileSchema,
 			preview: FileSchema,
+			piece: {
+				type: String,
+				enum: Object.values(SkinPiece),
+				required: true,
+			},
+			sex: {
+				type: String,
+				enum: Object.values(SkinSex),
+				required: true,
+			},
 		},
 		{
 			versionKey: false,
+			timestamps,
 		}
 	)
 );
@@ -117,16 +132,21 @@ const AchievementsModel = ItemsModel.discriminator<IAchievementDocument>(
 			type: String,
 			required: true,
 		},
+		rarity: {
+			type: String,
+			enum: Object.values(AchievementRarity),
+			required: true,
+		},
 	})
 );
 
 export {
-	ItemSchema,
-	ItemsModel,
-	FiguresModel,
-	TitlesModel,
 	AchievementsModel,
 	AvatarsModel,
 	BadgesModel,
+	FiguresModel,
+	ItemSchema,
+	ItemsModel,
 	SkinsModel,
+	TitlesModel,
 };
