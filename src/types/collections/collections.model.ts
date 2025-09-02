@@ -3,6 +3,7 @@ export const Collections = {
 	Crews: "Crews",
 	Workouts: "Workouts",
 	Journeys: "Journeys",
+	Missions: "Missions",
 	Items: "Items",
 	HealthyInfo: "HealthyInfo",
 	Titles: "Titles",

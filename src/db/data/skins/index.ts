@@ -1,4 +1,4 @@
-import { TSkin } from "../../src/types/collections";
+import { TSkin } from "types/collections";
 
 import bottoms from "./bottoms.data";
 import tops from "./tops.data";

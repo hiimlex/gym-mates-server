@@ -1,21 +1,23 @@
 import { Types } from "mongoose";
 import {
 	ItemCategory,
+	SkinIdBySlug,
 	SkinPiece,
 	SkinSex,
+	SkinSlug,
 	TSkin,
-} from "../../src/types/collections";
+} from "types/collections";
 
 const skin_bottoms: TSkin[] = [
 	{
-		_id: new Types.ObjectId("68b24ad123794735696853a6"),
+		_id: new Types.ObjectId(SkinIdBySlug[SkinSlug.b_shorts]),
 		name: "Shorts",
 		category: ItemCategory.Skin,
 		price: 20,
 		requirements: [],
 		piece: SkinPiece.bottom,
 		sex: SkinSex.male,
-		slug: "b_shorts",
+		slug: SkinSlug.b_shorts,
 	},
 ];
 

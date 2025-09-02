@@ -8,8 +8,9 @@ import {
 	TJourneyEvent,
 } from "types/collections";
 import { JourneyModel } from "../journey";
-import { FileSchema } from "@modules/files";
+import { FileSchema } from "../files";
 import { required } from "joi";
+import { AchievementsModel } from "../items";
 
 const UsersSchema = new Schema(
 	{
@@ -121,6 +122,28 @@ UsersSchema.methods.add_item_to_inventory = async function (
 	await user_journey.updateOne({
 		$push: { inventory: item_id },
 	});
+};
+
+UsersSchema.methods.get_achievements = async function () {
+	const user = this as IUserDocument;
+
+	if (!user.journey) {
+		throw new HttpException(404, "JOURNEY_NOT_FOUND");
+	}
+
+	const user_journey = await JourneyModel.findById(user.journey).populate(
+		"inventory"
+	);
+
+	if (!user_journey) {
+		throw new HttpException(404, "JOURNEY_NOT_FOUND");
+	}
+
+	const achievements = await AchievementsModel.find({
+		_id: { $in: user_journey.inventory.map((i) => i.item) },
+	});
+
+	return achievements;
 };
 
 UsersSchema.methods.toJSON = function () {

@@ -5,6 +5,8 @@ export * from "./files.model";
 export * from "./healthy.model";
 export * from "./items.model";
 export * from "./journey.model";
+export * from "./missions.model";
+export * from "./skins.model";
 export * from "./user_device.model";
 export * from "./users.model";
 export * from "./workouts.model";

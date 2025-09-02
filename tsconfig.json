@@ -20,6 +20,6 @@
 			"@middlewares/*": ["./src/middlewares/*"]
 		}
 	},
-	"include": ["./src/**/*", "scripts/items.data.ts"],
+	"include": ["./src/**/*", "src/scripts/items.data.ts"],
 	"exclude": ["node_modules", "dist"]
 }

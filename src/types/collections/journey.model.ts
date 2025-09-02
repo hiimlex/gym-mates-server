@@ -13,6 +13,7 @@ export enum JourneyEventAction {
 	LOSE_STREAK = "lose_streak",
 	START = "start",
 	FOLLOW = "follow",
+	COMPLETE_MISSION = "complete_mission",
 }
 
 export enum JourneyEventSchemaType {
@@ -22,6 +23,7 @@ export enum JourneyEventSchemaType {
 	Friend = "friend",
 	Crew = "crew",
 	User = "user",
+	Mission = "mission",
 }
 
 export type TJourney = InferSchemaType<typeof JourneySchema>;

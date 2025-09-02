@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { AllSkins } from "../data";
-import { SkinsModel } from "../src/modules/items";
+import { AllSkins } from "../db";
+import { SkinsModel } from "../modules/items";
 import fs from "fs";
 import path from "path";
-import { TFile } from "../src/types/collections";
+import { TFile } from "../types/collections";
 
 const cloudinary = require("cloudinary").v2;
 
@@ -40,13 +40,20 @@ async function create_all_skin_items() {
 		await mongoose.connect(url);
 
 		for (const skin of AllSkins) {
+			const existing = await SkinsModel.findById(skin._id);
+
+			if (existing) {
+				console.log(`⚠️ Skin already exists, skipping: ${skin.name}`);
+				continue;
+			}
+
 			// Build file paths based on a slug or ID
 			const baseName = skin.slug;
 			// Assuming images are stored in a local 'images' directory
 			const filePath = path.resolve(__dirname, `../images/${baseName}.svg`);
 			const previewPath = path.resolve(
 				__dirname,
-				`../images/${baseName}_preview.png`
+				`../../images/${baseName}_preview.png`
 			);
 
 			let file: TFile | null = null;
@@ -63,11 +70,18 @@ async function create_all_skin_items() {
 					`${baseName}_preview`
 				);
 			}
+
+			if(file === null) {
+				console.error(`⚠️ File upload failed for skin: ${skin.name}`);
+			}
+			if(preview === null) {
+				console.error(`⚠️ Preview upload failed for skin: ${skin.name}`);
+			}
 			// Insert into MongoDB with file references
 			const createdFile = await SkinsModel.create({ ...skin, file, preview });
 			// If insertion fails, optionally delete uploaded files to avoid orphaned files
 			if (!createdFile) {
-				console.error(`❌ Failed to insert skin: ${skin.name}`);
+				console.error(`⚠️Failed to insert skin: ${skin.name}`);
 				if (file && file.public_id) {
 					await cloudinary.uploader.destroy(file?.public_id);
 				}

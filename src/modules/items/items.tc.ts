@@ -28,6 +28,7 @@ const BadgesTC = ItemsDTC.discriminator(BadgesModel, {
 	name: ItemCategoryTc[ItemCategory.Badge],
 });
 const AchievementsTC = ItemsDTC.discriminator(AchievementsModel, {
+	fields: { remove: ["price"] },
 	name: ItemCategoryTc[ItemCategory.Achievement],
 });
 const FiguresTC = ItemsDTC.discriminator(FiguresModel, {

@@ -2,6 +2,7 @@ import { UsersSchema } from "@modules/users";
 import { Document, InferSchemaType, Model, Types } from "mongoose";
 import { TJourneyEvent } from "./journey.model";
 import { TCrew } from "./crews.model";
+import { IAchievementDocument } from "./items.model";
 
 export type TUser = InferSchemaType<typeof UsersSchema> & {
 	_id: Types.ObjectId;
@@ -11,6 +12,7 @@ export interface IUserDocument extends Document<Types.ObjectId>, TUser {
 	add_journey_event: (event: TJourneyEvent) => Promise<void>;
 	add_workout: (workout_id: Types.ObjectId) => Promise<void>;
 	add_item_to_inventory: (item_id: Types.ObjectId) => Promise<void>;
+	get_achievements: () => Promise<IAchievementDocument[]>;
 }
 
 export interface IUsersModel extends Model<IUserDocument> {}

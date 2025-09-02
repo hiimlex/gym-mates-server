@@ -5,8 +5,10 @@ import { CatchError } from "../../decorators/catch_error";
 import { Request, Response } from "express";
 import { RootFilterQuery, SortOrder, Types } from "mongoose";
 import {
+	AchievementKeys,
 	IItemDocument,
 	IJourneyDocument,
+	ItemCategory,
 	IUserDocument,
 	JourneyEventAction,
 	JourneyEventSchemaType,
@@ -51,13 +53,9 @@ class ShopRepository extends DecoratorController {
 
 		// If item has requirements, check if the user has them
 		if (items_requirements.length > 0) {
-			const journey_items = journey.inventory.map((i) => i.item);
-			const achievements = await AchievementsModel.find({
-				_id: { $in: journey_items },
-			});
-
-			const user_achievements = achievements.map(
-				(achievement) => achievement.category + ":" + achievement.key
+			const achievements = await user.get_achievements();
+			const user_achievements = achievements.map((achievement) =>
+				achievement.key.toString()
 			);
 
 			const user_met_requirements = items_requirements.every((req) =>
@@ -110,6 +108,7 @@ class ShopRepository extends DecoratorController {
 	@CatchError()
 	@IsAuthenticated()
 	protected async list_items(req: Request, res: Response) {
+		const user: IUserDocument = res.locals.user;
 		const journey: IJourneyDocument = res.locals.journey;
 
 		const { search, price_sort } = req.query;
@@ -119,6 +118,9 @@ class ShopRepository extends DecoratorController {
 
 		const query: RootFilterQuery<IItemDocument> = {
 			_id: { $nin: journey.inventory.map((i) => i.item._id) },
+			category: {
+				$nin: [ItemCategory.Achievement],
+			},
 		};
 
 		let sort_query: Record<string, SortOrder> = {
@@ -137,17 +139,12 @@ class ShopRepository extends DecoratorController {
 
 		const items = await ItemsModel.find(query).sort(sort_query);
 
-		const journey_items = journey.inventory.map((i) => i.item);
-		const achievements = await AchievementsModel.find({
-			_id: { $in: journey_items },
-		});
-
-		const user_achievements = achievements.map(
-			(achievement) => achievement.category + ":" + achievement.key
+		// get user achievements
+		const achievements = await user.get_achievements();
+		const user_achievements = achievements.map((achievement) =>
+			achievement.key.toString()
 		);
-
 		// Check item requirements
-
 		const show_locked = Boolean(req.query.locked);
 
 		const items_checked = await Promise.all(

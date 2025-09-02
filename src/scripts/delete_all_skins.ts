@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { AllSkins } from "../data";
-import { SkinsModel } from "../src/modules/items";
+import { AllSkins } from "../db";
+import { SkinsModel } from "../modules/items";
 
 const cloudinary = require("cloudinary").v2;
 
@@ -20,7 +20,6 @@ async function delete_all_skin_items() {
 		if (!url) throw new Error("Database URL not provided");
 
 		await mongoose.connect(url);
-		const db = mongoose.connection;
 
 		for (const skin of AllSkins) {
 			const skinDocument = await (SkinsModel as any).findById(skin._id);
@@ -42,7 +41,7 @@ async function delete_all_skin_items() {
 		}
 
 		console.log("All skin items have been deleted successfully.");
-		await db.close();
+		await mongoose.disconnect();
 
 		return;
 	} catch (error) {

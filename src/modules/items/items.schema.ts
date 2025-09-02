@@ -2,6 +2,7 @@ import { timestamps } from "@config/schema.config";
 import { FileSchema } from "@modules/files";
 import { model, Schema } from "mongoose";
 import {
+	AchievementKeys,
 	AchievementRarity,
 	Collections,
 	IAchievementDocument,
@@ -12,6 +13,7 @@ import {
 	ITitleDocument,
 	SkinPiece,
 	SkinSex,
+	SkinSlug,
 } from "types/collections";
 
 const ItemSchema = new Schema(
@@ -22,10 +24,11 @@ const ItemSchema = new Schema(
 			enum: Object.values(ItemCategory),
 			required: true,
 		},
-		price: { type: Number, default: 0, required: true },
+		price: { type: Number, required: true },
 		requirements: {
 			type: [String],
 			default: [],
+			enum: Object.values(AchievementKeys),
 			required: true,
 		},
 	},
@@ -102,6 +105,12 @@ const SkinsModel = ItemsModel.discriminator<IFigureDocument>(
 				enum: Object.values(SkinSex),
 				required: true,
 			},
+			slug: {
+				type: String,
+				required: true,
+				unique: true,
+				enum: Object.values(SkinSlug),
+			},
 		},
 		{
 			versionKey: false,
@@ -112,32 +121,47 @@ const SkinsModel = ItemsModel.discriminator<IFigureDocument>(
 
 const TitlesModel = ItemsModel.discriminator<ITitleDocument>(
 	ItemCategory.Title,
-	new Schema({
-		title: {
-			type: String,
-			required: true,
+	new Schema(
+		{
+			title: {
+				type: String,
+				required: true,
+			},
 		},
-	})
+		{ versionKey: false, timestamps }
+	)
 );
 
 const AchievementsModel = ItemsModel.discriminator<IAchievementDocument>(
 	ItemCategory.Achievement,
-	new Schema({
-		key: {
-			type: String,
-			unique: true,
-			required: true,
+	new Schema(
+		{
+			key: {
+				type: String,
+				enum: Object.values(AchievementKeys),
+				unique: true,
+				required: true,
+			},
+			description: {
+				type: String,
+				required: true,
+			},
+			rarity: {
+				type: String,
+				enum: Object.values(AchievementRarity),
+				required: true,
+			},
+			price: {
+				type: Number,
+				required: false,
+			},
+			name: {
+				type: String,
+				required: false,
+			},
 		},
-		description: {
-			type: String,
-			required: true,
-		},
-		rarity: {
-			type: String,
-			enum: Object.values(AchievementRarity),
-			required: true,
-		},
-	})
+		{ versionKey: false }
+	)
 );
 
 export {
