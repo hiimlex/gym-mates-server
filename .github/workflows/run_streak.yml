@@ -12,5 +12,5 @@ jobs:
     steps:
       - name: Call streak endpoint
         run: |
-          curl -X POST https://your-api.onrender.com/internal/run-streak \
+          curl -X POST https://gym-mates.onrender.com/api/v1/jobs/check-users-streak \
             -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
