@@ -7,10 +7,9 @@ import {
 	IUsersModel,
 	TJourneyEvent,
 } from "types/collections";
-import { JourneyModel } from "../journey";
 import { FileSchema } from "../files";
-import { required } from "joi";
 import { AchievementsModel } from "../items";
+import { JourneyModel } from "../journey";
 
 const UsersSchema = new Schema(
 	{
@@ -33,7 +32,7 @@ const UsersSchema = new Schema(
 		},
 		healthy: {
 			type: Types.ObjectId,
-			red: Collections.HealthyInfo,
+			ref: Collections.HealthyInfo,
 			required: false,
 		},
 		following: {

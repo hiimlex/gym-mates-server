@@ -1,3 +1,4 @@
+import { JobsRepositoryImpl } from "@jobs/jobs.repository";
 import {
 	AuthRepositoryImpl,
 	CrewsRepositoryImpl,
@@ -16,4 +17,5 @@ export const routers = [
 	ItemsRepositoryImpl.router,
 	ShopRepositoryImpl.router,
 	MissionsRepositoryImpl.router,
+	JobsRepositoryImpl.router,
 ];

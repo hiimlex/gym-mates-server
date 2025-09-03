@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { Server } from "./app";
 
-import "./jobs/check_users_streak_job";
+// import "./jobs/check_users_streak_job";
 
 dotenv.config();
 

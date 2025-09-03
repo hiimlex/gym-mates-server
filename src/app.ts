@@ -1,5 +1,5 @@
 import { expressMiddleware } from "@as-integrations/express4";
-import { connect_database } from "@config/connect_database";
+import { connect_database } from "@db/connect_database";
 import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";

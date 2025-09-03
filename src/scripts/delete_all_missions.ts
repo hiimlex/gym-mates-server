@@ -1,7 +1,7 @@
 import { AchievementsModel } from "@modules/items";
 import { MissionsModel } from "@modules/missions";
 import mongoose from "mongoose";
-import { AllAchievementsIds, MissionsIds } from "src/db";
+import { AllAchievementsIds, MissionsIds } from "@db/data";
 
 async function delete_all_missions() {
 	try {

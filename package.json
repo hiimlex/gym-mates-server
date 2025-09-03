@@ -11,7 +11,9 @@
 		"test": "npx cross-env NODE_ENV=test jest --no-cache --watchAll=false --color",
 		"test:watch": "npx cross-env NODE_ENV=test jest --watch --no-cache --onlyChanged ",
 		"test:coverage": "npx cross-env NODE_ENV=test jest --coverage",
-		"build:deploy": "npm run build && git subtree split --prefix dist -b dist && git push -u origin dist"
+		"build:deploy": "npm run build && git subtree split --prefix dist -b dist && git push -u origin dist",
+		"jobs:dev": "ts-node-dev -r tsconfig-paths/register src/jobs/run_jobs.ts",
+		"jobs:prod": "node dist/jobs/run_jobs.js"
 	},
 	"keywords": [],
 	"author": "",

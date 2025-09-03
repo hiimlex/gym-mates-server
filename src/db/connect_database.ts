@@ -1,5 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
-import { add_mongo_transport } from "./logger.config";
+import { add_mongo_transport } from "../config/logger.config";
 
 export async function connect_database(): Promise<Mongoose | null> {
 	try {
