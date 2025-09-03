@@ -1,4 +1,5 @@
 import { DecoratorController } from "@core/base_controller";
+import { HttpException } from "@core/http_exception";
 import { CatchError } from "@decorators/catch_error";
 import { IsAdmin } from "@decorators/is_admin.decorator";
 import { Post } from "@decorators/routes.decorator";
@@ -19,8 +20,11 @@ import { Endpoints } from "types/generics";
 class JobsRepository extends DecoratorController {
 	@Post(Endpoints.JobsCheckUsersStreak)
 	@CatchError()
-	@IsAdmin()
 	protected async check_users_streak(req: Request, res: Response) {
+		if (req.headers["x-cron-secret"] !== process.env.SUDO_KEY) {
+			throw new HttpException(403, "FORBIDDEN");
+		}
+
 		const job_date = new Date();
 		console.log("Cron job running at", job_date.toISOString());
 		// call your streak check logic here

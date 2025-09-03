@@ -23,8 +23,6 @@ import mongoose, { Types } from "mongoose";
  * If the user logs any workout in past, the streak will be recalculated on the workout creation logic.
  * Described in 'workout.helper.ts' file.
  */
-// Run at each 30 seconds for testing
-// cron.schedule("*/30 * * * * *", async () => {
 cron.schedule("*/30 * * * * *", async () => {
 	// const job_date = new Date();
 	// console.log("Cron job running at", job_date.toISOString());
