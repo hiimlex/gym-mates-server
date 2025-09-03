@@ -1,0 +1,16 @@
+name: Run Streak Job
+
+# - cron: '0 23 * * *' # Runs every day at 23:00 UTC
+on:
+  schedule:
+    - cron: '*/2 * * * *' # Runs every 2 minutes
+  workflow_dispatch: # optional, allows manual run
+
+jobs:
+  streak:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call streak endpoint
+        run: |
+          curl -X POST https://your-api.onrender.com/internal/run-streak \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
