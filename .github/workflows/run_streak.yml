@@ -12,11 +12,6 @@ jobs:
       - name: Warm up service
         run: |
           curl -s https://your-api.onrender.com/ || true
-      - name: Run streak job
-        run: |
-          sleep 60 # give Render time to boot the container
-          curl -X POST https://your-api.onrender.com/internal/run-streak \
-            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
       - name: Call streak endpoint
         run: |
           for i in 1 2 3; do
