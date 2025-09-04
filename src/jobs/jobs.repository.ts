@@ -114,6 +114,7 @@ class JobsRepository extends DecoratorController {
 							last_workout_date,
 							lose_streak_at: job_date,
 							lose_streak_in_days,
+							user_streak,
 						},
 						created_at: new Date(),
 					};
@@ -140,9 +141,9 @@ class JobsRepository extends DecoratorController {
 					action: JourneyEventAction.LOSE_STREAK,
 					schema: JourneyEventSchemaType.Workout,
 					data: {
-						last_workout_date: null,
 						lose_streak_at: job_date,
 						lose_streak_in_days,
+						user_streak,
 					},
 					created_at: new Date(),
 				};
