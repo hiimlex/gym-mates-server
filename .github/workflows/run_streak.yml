@@ -2,7 +2,7 @@ name: Run Streak Job
 
 on:
   schedule:
-    - cron: '0 14 * * *' # every day at 14:00 UTC
+    - cron: '0 1 * * *' # Runs at 1:00 AM UTC daily
   workflow_dispatch: # optional, allows manual run
 
 jobs:
