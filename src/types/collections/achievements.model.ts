@@ -15,8 +15,8 @@ export enum AchievementKeys {
 	beta = "achievement:beta",
 	// workouts
 	first_workout = "achievement:first_workout",
-	speedrunner = "achievement:speedrunner",
-	maraton = "achievement:maraton",
+	speed_runner = "achievement:speed_runner",
+	tik_tok = "achievement:tik_tok",
 	one_week_streak = "achievement:one_week_streak",
 	one_month_streak = "achievement:one_month_streak",
 	weekend_warrior = "achievement:weekend_warrior",
@@ -40,6 +40,40 @@ export enum AchievementKeys {
 	unknown = "achievement:unknown",
 }
 
+export enum WorkoutAchievementKeys {
+	first_workout = AchievementKeys.first_workout,
+	night_owl = AchievementKeys.night_owl,
+	early_bird = AchievementKeys.early_bird,
+	weekend_warrior = AchievementKeys.weekend_warrior,
+	one_week_streak = AchievementKeys.one_week_streak,
+	a_hundred = AchievementKeys.a_hundred,
+	factotum = AchievementKeys.factotum,
+	speed_runner = AchievementKeys.speed_runner,
+	tik_tok = AchievementKeys.tik_tok,
+	one_month_streak = AchievementKeys.one_month_streak,
+}
+
+export enum SocialAchievementKeys {
+	hello_world = AchievementKeys.hello_world,
+	influencer = AchievementKeys.influencer,
+	family = AchievementKeys.family,
+	the_boss = AchievementKeys.the_boss,
+	mentor = AchievementKeys.mentor,
+
+}
+
+export enum ShopAchievementKeys {
+	collector = AchievementKeys.collector,
+	consumerist = AchievementKeys.consumerist,
+	rich = AchievementKeys.rich,
+	poor = AchievementKeys.poor,
+}
+
+export enum SecretAchievementKeys {
+	click = AchievementKeys.click,
+	unknown = AchievementKeys.unknown,
+}
+
 export enum AchievementRarity {
 	common = "common",
 	rare = "rare",
@@ -54,8 +88,8 @@ export const AchievementNameByKey: Record<AchievementKeys, string> = {
 	"achievement:mentor": "Mentor",
 	// workouts
 	"achievement:first_workout": "First Workout",
-	"achievement:speedrunner": "Speedrunner",
-	"achievement:maraton": "Maraton",
+	"achievement:speed_runner": "Speed Runner",
+	"achievement:tik_tok": "Tik Tok",
 	"achievement:one_week_streak": "One Week Streak",
 	"achievement:one_month_streak": "One Month Streak",
 	"achievement:weekend_warrior": "Weekend Warrior",
@@ -86,12 +120,12 @@ export const AchievementDescriptionByKey: Record<AchievementKeys, string> = {
 	"achievement:mentor": "5 new users joined using your invite code",
 	//
 	"achievement:first_workout": "Complete your first workout",
-	"achievement:speedrunner": "Complete a workout in under 15 minutes",
-	"achievement:maraton": "Complete a workout with more than 3 hours",
+	"achievement:speed_runner": "Complete a workout in under 20 minutes",
+	"achievement:tik_tok": "Spend 3 hours in a single workout session",
 	"achievement:one_week_streak":
-		"Complete at least one workout every day for a week",
+		"Reach 7 days streak",
 	"achievement:one_month_streak":
-		"Complete at least one workout every day for a month",
+		"Reach 30 days streak",
 	"achievement:weekend_warrior":
 		"Complete at least one workout on both Saturday and Sunday in the same weekend",
 	"achievement:early_bird": "Complete a workout before 8 AM",
@@ -119,8 +153,8 @@ export const AchievementRarityByKey: Record<
 	"achievement:beta": AchievementRarity.epic,
 	"achievement:the_boss": AchievementRarity.epic,
 	"achievement:first_workout": AchievementRarity.common,
-	"achievement:speedrunner": AchievementRarity.rare,
-	"achievement:maraton": AchievementRarity.rare,
+	"achievement:speed_runner": AchievementRarity.rare,
+	"achievement:tik_tok": AchievementRarity.rare,
 	"achievement:one_week_streak": AchievementRarity.common,
 	"achievement:one_month_streak": AchievementRarity.rare,
 	"achievement:weekend_warrior": AchievementRarity.common,
@@ -145,8 +179,8 @@ export const AchievementIdsByKey: Record<AchievementKeys, string> = {
 	"achievement:beta": "68b6dbbc2afe375afd84cfda",
 	"achievement:the_boss": "68b6dbc1684a8551f5c3e58b",
 	"achievement:first_workout": "68b6dbc5ac1272797c379287",
-	"achievement:speedrunner": "68b6dbca6f8e09effd7267d8",
-	"achievement:maraton": "68b6dbcf1fb30e78d0bef927",
+	"achievement:speed_runner": "68b6dbca6f8e09effd7267d8",
+	"achievement:tik_tok": "68b6dbcf1fb30e78d0bef927",
 	"achievement:one_week_streak": "68b6dbd47888615c6e1025d8",
 	"achievement:one_month_streak": "68b6dbdb1ea8809063b62c00",
 	"achievement:weekend_warrior": "68b6dbdf64b2af97f9e5be46",

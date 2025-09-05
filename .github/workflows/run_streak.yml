@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Warm up service
         run: |
-          curl -s https://your-api.onrender.com/ || true
+          curl -s https://gym-mates.onrender.com/ || true
       - name: Call streak endpoint
         run: |
           for i in 1 2 3; do

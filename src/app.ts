@@ -8,6 +8,7 @@ import { create_apollo_server } from "./gpql/gpql";
 import mongoose from "mongoose";
 import { JwtSecret } from "types/generics";
 import { routers } from "./routers/routers";
+import { register_workout_missions_listener } from "@modules/missions";
 
 export class Server {
 	app!: Application;
@@ -32,6 +33,10 @@ export class Server {
 		this.app.use(cookieParser(JwtSecret.toString()));
 	}
 
+	private register_listeners() {
+		register_workout_missions_listener();
+	}
+
 	async setup() {
 		this.app = express();
 
@@ -43,8 +48,9 @@ export class Server {
 		}
 
 		this.set_middlewares();
-
 		this.init_routes();
+		// register event bus listeners
+		this.register_listeners();
 
 		const apollo_server = await create_apollo_server();
 

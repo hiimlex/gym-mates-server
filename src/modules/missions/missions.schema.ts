@@ -1,6 +1,11 @@
 import { timestamps } from "@config/schema.config";
 import { model, Schema, Types } from "mongoose";
-import { AchievementKeys, Collections, IMissionDocument } from "types/collections";
+import {
+	AchievementKeys,
+	Collections,
+	IMissionDocument,
+	MissionContext,
+} from "types/collections";
 
 const MissionSchema = new Schema(
 	{
@@ -39,6 +44,11 @@ const MissionSchema = new Schema(
 			default: [],
 			required: false,
 		},
+		context: {
+			type: String,
+			required: true,
+			enum: Object.values(MissionContext),
+		},
 		// repeatable: {
 		// 	type: Boolean,
 		// 	default: false,
@@ -48,6 +58,9 @@ const MissionSchema = new Schema(
 	{ versionKey: false, timestamps, collection: Collections.Missions }
 );
 
-const MissionsModel = model<IMissionDocument>(Collections.Missions, MissionSchema);
+const MissionsModel = model<IMissionDocument>(
+	Collections.Missions,
+	MissionSchema
+);
 
 export { MissionSchema, MissionsModel };

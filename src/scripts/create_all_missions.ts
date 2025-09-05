@@ -34,13 +34,13 @@ async function create_all_missions() {
 			const created_achievement = await AchievementsModel.create(achievement);
 
 			if (!created_achievement) {
-				console.log(`Failed to create achievement: ${achievement.key}`);
+				console.log(`❌ Failed to create achievement: ${achievement.key}`);
 				continue;
 			}
 
 			created_achievements.push(created_achievement);
 
-			console.log(`Created achievement: ${created_achievement.key}`);
+			console.log(`✅ Created achievement: ${created_achievement.key}`);
 		}
 
 		for (const mission of Missions) {
@@ -56,12 +56,12 @@ async function create_all_missions() {
 			);
 
 			if (!linked_achievement) {
-				console.log(`No linked achievement found for mission: ${mission.name}`);
+				console.log(`⚠️ No linked achievement found for mission: ${mission.name}, skipping.`);
 				continue;
 			}
 
 			await MissionsModel.create(mission);
-			console.log(`Created mission: ${mission.name}`);
+			console.log(`✅ Created mission: ${mission.name}`);
 		}
 
 		console.log("✅ All missions and achievements created successfully.");

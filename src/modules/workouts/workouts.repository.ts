@@ -126,9 +126,9 @@ class WorkoutsRepository extends DecoratorController {
 			receipt: !workout_in_day ? receipt : undefined,
 		});
 
-		// [CoinSystem] - Add coins to the user for creating a workout
+		// [CoinSystem] - Add coins to the user for doing a workout
 		// Update the user's streak and coins
-		// if the user has no workout registered on the same day
+		// only if the user has no workout registered on the same day
 		if (!workout_in_day) {
 			await user.updateOne({
 				day_streak,

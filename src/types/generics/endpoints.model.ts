@@ -45,7 +45,7 @@ export const Endpoints = {
 	// Missions
 	MissionsList: "/missions",
 	MissionsClaim: "/missions/claim",
-
+	MissionsTest: "/missions/test",
 	// Jobs
 	JobsCheckUsersStreak: "/jobs/check-users-streak",
 };

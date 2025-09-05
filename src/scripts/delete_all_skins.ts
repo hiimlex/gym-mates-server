@@ -25,7 +25,7 @@ async function delete_all_skin_items() {
 			const skinDocument = await (SkinsModel as any).findById(skin._id);
 
 			if (!skinDocument) {
-				console.log(`Skin with ID ${skin._id} not found.`);
+				console.log(`⚠️ Skin with ID ${skin._id} not found.`);
 				continue;
 			}
 
@@ -40,12 +40,12 @@ async function delete_all_skin_items() {
 			await skinDocument.deleteOne();
 		}
 
-		console.log("All skin items have been deleted successfully.");
+		console.log("✅ All skin items have been deleted successfully.");
 		await mongoose.disconnect();
 
 		return;
 	} catch (error) {
-		console.error("Error connecting to the database:", error);
+		console.error("❌ Error connecting to the database:", error);
 		return;
 	}
 }

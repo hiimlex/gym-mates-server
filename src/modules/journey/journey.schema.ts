@@ -94,4 +94,4 @@ const JourneyModel: IJourneyModel = model<IJourneyDocument, IJourneyModel>(
 	Collections.Journeys
 );
 
-export { JourneySchema, EventSchema, JourneyModel };
+export { JourneySchema, EventSchema, InventoryItem, JourneyModel };

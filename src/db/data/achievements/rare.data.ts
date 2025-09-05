@@ -11,20 +11,20 @@ import {
 
 const RareAchievements: TAchievement[] = [
 	{
-		key: AchievementKeys.speedrunner,
+		key: AchievementKeys.speed_runner,
 		category: ItemCategory.Achievement,
-		_id: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.speedrunner]),
-		description: AchievementDescriptionByKey[AchievementKeys.speedrunner],
-		rarity: AchievementRarityByKey[AchievementKeys.speedrunner],
-		name: AchievementNameByKey[AchievementKeys.speedrunner],
+		_id: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.speed_runner]),
+		description: AchievementDescriptionByKey[AchievementKeys.speed_runner],
+		rarity: AchievementRarityByKey[AchievementKeys.speed_runner],
+		name: AchievementNameByKey[AchievementKeys.speed_runner],
 	},
 	{
-		key: AchievementKeys.maraton,
+		key: AchievementKeys.tik_tok,
 		category: ItemCategory.Achievement,
-		_id: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.maraton]),
-		description: AchievementDescriptionByKey[AchievementKeys.maraton],
-		rarity: AchievementRarityByKey[AchievementKeys.maraton],
-		name: AchievementNameByKey[AchievementKeys.maraton],
+		_id: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.tik_tok]),
+		description: AchievementDescriptionByKey[AchievementKeys.tik_tok],
+		rarity: AchievementRarityByKey[AchievementKeys.tik_tok],
+		name: AchievementNameByKey[AchievementKeys.tik_tok],
 	},
 	{
 		key: AchievementKeys.early_bird,

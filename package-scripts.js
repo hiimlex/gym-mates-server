@@ -5,26 +5,35 @@ const ENV = process.env.NODE_ENV || "development";
 module.exports = {
 	scripts: {
 		data: {
-			createAllMissions: series(
-				crossEnv(
-					`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/create_all_missions.ts`
-				)
-			),
-			deleteAllMissions: series(
-				crossEnv(
-					`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/delete_all_missions.ts`
-				)
-			),
-			createAllSkins: series(
-				crossEnv(
-					`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/create_all_skins.ts`
-				)
-			),
-			deleteAllSkins: series(
-				crossEnv(
-					`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/delete_all_skins.ts`
-				)
-			),
+			missions: {
+				create: series(
+					crossEnv(
+						`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/create_all_missions.ts`
+					)
+				),
+				delete: series(
+					crossEnv(
+						`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/delete_all_missions.ts`
+					)
+				),
+				update: series(
+					crossEnv(
+						`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/update_all_missions.ts`
+					)
+				),
+			},
+			skins: {
+				create: series(
+					crossEnv(
+						`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/create_all_skins.ts`
+					)
+				),
+				delete: series(
+					crossEnv(
+						`NODE_ENV=${ENV} ts-node -r tsconfig-paths/register src/scripts/delete_all_skins.ts`
+					)
+				),
+			},
 		},
 	},
 };

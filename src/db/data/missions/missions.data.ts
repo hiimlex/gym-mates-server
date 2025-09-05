@@ -3,6 +3,8 @@ import {
 	AchievementDescriptionByKey,
 	AchievementIdsByKey,
 	AchievementKeys,
+	AchievementNameByKey,
+	MissionContext,
 	MissionsIdsByAchievementKey,
 	TMission,
 } from "types/collections";
@@ -17,35 +19,38 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [],
 		reward: 5,
-		name: "First Workout",
+		name: AchievementNameByKey[AchievementKeys.first_workout],
 		description: AchievementDescriptionByKey[AchievementKeys.first_workout],
 		hidden: false,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
-			MissionsIdsByAchievementKey[AchievementKeys.speedrunner]
+			MissionsIdsByAchievementKey[AchievementKeys.speed_runner]
 		),
 		achievement: new Types.ObjectId(
-			AchievementIdsByKey[AchievementKeys.speedrunner]
+			AchievementIdsByKey[AchievementKeys.speed_runner]
 		),
 		requirements: [AchievementKeys.first_workout],
 		reward: 2,
-		name: "Speedrunner",
-		description: AchievementDescriptionByKey[AchievementKeys.speedrunner],
+		name: AchievementNameByKey[AchievementKeys.speed_runner],
+		description: AchievementDescriptionByKey[AchievementKeys.speed_runner],
 		hidden: true,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
-			MissionsIdsByAchievementKey[AchievementKeys.maraton]
+			MissionsIdsByAchievementKey[AchievementKeys.tik_tok]
 		),
 		achievement: new Types.ObjectId(
-			AchievementIdsByKey[AchievementKeys.maraton]
+			AchievementIdsByKey[AchievementKeys.tik_tok]
 		),
-		requirements: [AchievementKeys.speedrunner],
+		requirements: [AchievementKeys.speed_runner],
 		reward: 3,
-		name: "Maraton",
-		description: AchievementDescriptionByKey[AchievementKeys.maraton],
+		name: AchievementNameByKey[AchievementKeys.tik_tok],
+		description: AchievementDescriptionByKey[AchievementKeys.tik_tok],
 		hidden: true,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -56,9 +61,10 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.first_workout],
 		reward: 7,
-		name: "One Week Streak",
+		name: AchievementNameByKey[AchievementKeys.one_week_streak],
 		description: AchievementDescriptionByKey[AchievementKeys.one_week_streak],
 		hidden: false,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -69,8 +75,9 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.one_week_streak],
 		reward: 15,
-		name: "One Month Streak",
+		name: AchievementNameByKey[AchievementKeys.one_month_streak],
 		description: AchievementDescriptionByKey[AchievementKeys.one_month_streak],
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -81,9 +88,10 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.first_workout],
 		reward: 5,
-		name: "Weekend Warrior",
+		name: AchievementNameByKey[AchievementKeys.weekend_warrior],
 		description: AchievementDescriptionByKey[AchievementKeys.weekend_warrior],
 		hidden: true,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -94,9 +102,10 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.first_workout],
 		reward: 5,
-		name: "Early Bird",
+		name: AchievementNameByKey[AchievementKeys.early_bird],
 		description: AchievementDescriptionByKey[AchievementKeys.early_bird],
 		hidden: true,
+		context: MissionContext.Workout,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -107,9 +116,10 @@ const WorkoutsMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.first_workout, AchievementKeys.early_bird],
 		reward: 5,
-		name: "Night Owl",
+		name: AchievementNameByKey[AchievementKeys.night_owl],
 		description: AchievementDescriptionByKey[AchievementKeys.night_owl],
 		hidden: true,
+		context: MissionContext.Workout,
 	},
 ];
 
@@ -123,18 +133,20 @@ const ShopMissions: TMission[] = [
 		),
 		requirements: [],
 		reward: 10,
-		name: "Consumerist",
+		name: AchievementNameByKey[AchievementKeys.consumerist],
 		description: AchievementDescriptionByKey[AchievementKeys.consumerist],
 		hidden: false,
+		context: MissionContext.Shop,
 	},
 	{
 		_id: new Types.ObjectId(MissionsIdsByAchievementKey[AchievementKeys.poor]),
 		achievement: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.poor]),
 		requirements: [],
 		reward: 10,
-		name: "Poor",
+		name: AchievementNameByKey[AchievementKeys.poor],
 		description: AchievementDescriptionByKey[AchievementKeys.poor],
 		hidden: true,
+		context: MissionContext.Shop,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -145,18 +157,20 @@ const ShopMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.consumerist],
 		reward: 15,
-		name: "Collector",
+		name: AchievementNameByKey[AchievementKeys.collector],
 		description: AchievementDescriptionByKey[AchievementKeys.collector],
 		hidden: false,
+		context: MissionContext.Shop,
 	},
 	{
 		_id: new Types.ObjectId(MissionsIdsByAchievementKey[AchievementKeys.rich]),
 		achievement: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.rich]),
 		requirements: [AchievementKeys.collector, AchievementKeys.poor],
 		reward: 25,
-		name: "Rich",
+		name: AchievementNameByKey[AchievementKeys.rich],
 		description: AchievementDescriptionByKey[AchievementKeys.rich],
 		hidden: true,
+		context: MissionContext.Shop,
 	},
 ];
 
@@ -170,9 +184,10 @@ const SocialMissions: TMission[] = [
 		),
 		requirements: [],
 		reward: 5,
-		name: "Hello World",
+		name: AchievementNameByKey[AchievementKeys.hello_world],
 		description: AchievementDescriptionByKey[AchievementKeys.hello_world],
 		hidden: false,
+		context: MissionContext.Social,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -183,9 +198,10 @@ const SocialMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.hello_world],
 		reward: 10,
-		name: "Family",
+		name: AchievementNameByKey[AchievementKeys.family],
 		description: AchievementDescriptionByKey[AchievementKeys.family],
 		hidden: false,
+		context: MissionContext.Social,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -196,9 +212,10 @@ const SocialMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.beta],
 		reward: 20,
-		name: "Mentor",
+		name: AchievementNameByKey[AchievementKeys.mentor],
 		description: AchievementDescriptionByKey[AchievementKeys.mentor],
 		hidden: true,
+		context: MissionContext.Social,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -209,9 +226,10 @@ const SocialMissions: TMission[] = [
 		),
 		requirements: [],
 		reward: 15,
-		name: "Influencer",
+		name: AchievementNameByKey[AchievementKeys.influencer],
 		description: AchievementDescriptionByKey[AchievementKeys.influencer],
 		hidden: false,
+		context: MissionContext.Social,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -222,9 +240,10 @@ const SocialMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.family, AchievementKeys.factotum],
 		reward: 50,
-		name: "The Boss",
+		name: AchievementNameByKey[AchievementKeys.the_boss],
 		description: AchievementDescriptionByKey[AchievementKeys.the_boss],
 		hidden: true,
+		context: MissionContext.Social,
 	},
 ];
 
@@ -234,9 +253,10 @@ const SecretMissions: TMission[] = [
 		achievement: new Types.ObjectId(AchievementIdsByKey[AchievementKeys.click]),
 		requirements: [],
 		reward: 10,
-		name: "Click",
+		name: AchievementNameByKey[AchievementKeys.click],
 		description: AchievementDescriptionByKey[AchievementKeys.click],
 		hidden: true,
+		context: MissionContext.Secret,
 	},
 	{
 		_id: new Types.ObjectId(
@@ -247,9 +267,10 @@ const SecretMissions: TMission[] = [
 		),
 		requirements: [AchievementKeys.click],
 		reward: 20,
-		name: "Unknown",
+		name: AchievementNameByKey[AchievementKeys.unknown],
 		description: AchievementDescriptionByKey[AchievementKeys.unknown],
 		hidden: true,
+		context: MissionContext.Secret,
 	},
 ];
 

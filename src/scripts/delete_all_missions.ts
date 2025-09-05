@@ -18,13 +18,13 @@ async function delete_all_missions() {
 			const achievement = await AchievementsModel.findById(achievement_id);
 			
 			if(!achievement){
-				console.log(`Achievement with ID ${achievement_id} not found.`);
+				console.log(`⚠️ Achievement with ID ${achievement_id} not found.`);
 				continue;
 			}
 
 			await achievement.deleteOne();
 
-			console.log(`Deleted achievement ${achievement.key}.`);
+			console.log(`✅ Deleted achievement ${achievement.key}.`);
 		}
 
 		for (const mission_id of MissionsIds) {
@@ -42,7 +42,7 @@ async function delete_all_missions() {
 			);
 		}
 		console.log(
-			"✅ All missions and their linked achievements deleted successfully."
+			"✅ All missions and achievements deleted successfully."
 		);
 		await mongoose.disconnect();
 	} catch (error) {
